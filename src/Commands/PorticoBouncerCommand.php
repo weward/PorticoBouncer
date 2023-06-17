@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Weward\PorticoBouncer\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class PorticoBouncerCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'porticobouncer';
 
     public $description = 'My command';
 
