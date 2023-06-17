@@ -1,3 +1,46 @@
+# PorticoBouncer
+
+This also serves as a template
+
+---
+
+### Creating a new package
+
+- Use Spatie package-skeleton-laravel to install and configure a new package (+namespace|etc)
+
+- Copy the ff from Spatie/laravel-package-tools and update the imports in your own package
+
+    - `InstallCommand.php`
+
+    - `Package.php`
+
+    - `PackageServiceProvider.php`
+
+- If will be creating a new method (publishing files), add the method implementation in the boot() method of Package.php
+
+- Add the variables in the PackageServiceProvider
+
+- Call the method in the configurePackage() method of the PackageNameServiceProvider
+
+
+### Using
+
+- Submit project via Packagist
+
+- Composer require
+
+- `php artisan package:discover`
+
+- Add The Package to `'providers'` array of the `config/app.php` file.
+
+- `php artisan packageName:install`
+
+- `php artisan vendor:publish --tag=subpackage-middleware` if would publish middlewares that came with the package to `App\Http\Middleware`
+
+---
+
+
+
 # This is just a test
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/weward/porticobouncer.svg?style=flat-square)](https://packagist.org/packages/weward/porticobouncer)
