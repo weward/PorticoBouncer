@@ -4,7 +4,6 @@ namespace Weward\PorticoBouncer;
 
 use Illuminate\Support\Str;
 use Spatie\LaravelPackageTools\Package;
-use Spatie\LaravelPackageTools\Commands\InstallCommand;
 
 class Package extends Package
 {

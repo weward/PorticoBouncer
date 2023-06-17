@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Weward\PorticoBouncer;
 
@@ -12,11 +12,10 @@ abstract class PackageServiceProvider extends PackageServiceProvider
 
         if ($this->package->hasMiddlewares) {
             $this->publishes([
-                $this->package->basePath('Middleware') => app_path("Http/Middleware"),
+                $this->package->basePath('Middleware') => app_path('Http/Middleware'),
             ], "{$this->package->shortName()}-middleware");
         }
 
         return $this;
     }
-
 }
