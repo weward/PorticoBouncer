@@ -2,27 +2,35 @@
 
 namespace Weward\PorticoBouncer;
 
-// use Spatie\LaravelPackageTools\Package;
+// use Spatie\LaravelPackageTools\Package as SpatiePackage;
 use Weward\PorticoBouncer\Package;
-use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Weward\PorticoBouncer\Commands\PorticoBouncerCommand;
-use Spatie\LaravelPackageTools\Commands\InstallCommand;
+use Weward\PorticoBouncer\PackageServiceProvider;
+// use Spatie\LaravelPackageTools\Commands\InstallCommand;
+use Weward\PorticoBouncer\Commands\InstallCommand;
 
 class PorticoBouncerServiceProvider extends PackageServiceProvider
 {
     protected $packageName = 'porticobouncer';
 
+    public function boot()
+    {
+        parent::boot();
+
+        // $this->publishMiddlewares();
+    }
+    
+    // public function configurePackage(SpatiePackage $package): void
     public function configurePackage(Package $package): void
     {
         /*
-         * This class is a Package Service Provider
+         * Package $package for default Spatie methods
+         * 
+         * For custom methods/properties, use the Weward/PorticoBouncer/PackageServiceProvider
          *
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package
             ->name($this->packageName)
-            // ->hasConfigFile()
-            // ->hasViews()
             ->hasMiddlewares()
             ->hasInstallCommand(function(InstallCommand $command) {
                 $command
@@ -33,22 +41,5 @@ class PorticoBouncerServiceProvider extends PackageServiceProvider
                         $command->info("Done installing package {$this->packageName}");
                     });
             });
-            // ->hasMigration('create_porticobouncer_table')
-            // ->hasCommand(PorticoBouncerCommand::class);
-    }
-
-    public function boot()
-    {
-        parent::boot();
-
-        if ($this->app->runningInConsole()) {
-            if ($this->package->hasTranslations) {
-                $this->publishes([
-                    $this->package->basePath('/../resources/lang') => $langPath,
-                ], "{$this->package->shortName()}-translations");
-            }
-        }
-
-        return $this;
     }
 }
