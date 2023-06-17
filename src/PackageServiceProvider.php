@@ -48,11 +48,11 @@ abstract class PackageServiceProvider extends ServiceProvider
         $this->bootingPackage();
 
         if ($this->package->hasTranslations) {
-            $langPath = 'vendor/' . $this->package->shortName();
+            $langPath = 'vendor/'.$this->package->shortName();
 
             $langPath = (function_exists('lang_path'))
                 ? lang_path($langPath)
-                : resource_path('lang/' . $langPath);
+                : resource_path('lang/'.$langPath);
         }
 
         if ($this->app->runningInConsole()) {
@@ -71,7 +71,7 @@ abstract class PackageServiceProvider extends ServiceProvider
             $now = Carbon::now();
             foreach ($this->package->migrationFileNames as $migrationFileName) {
                 $filePath = $this->package->basePath("/../database/migrations/{$migrationFileName}.php");
-                if (!file_exists($filePath)) {
+                if (! file_exists($filePath)) {
                     // Support for the .stub file extension
                     $filePath .= '.stub';
                 }
@@ -102,16 +102,16 @@ abstract class PackageServiceProvider extends ServiceProvider
 
             if ($this->package->hasMiddlewares) {
                 $this->publishes([
-                    $this->package->basePath('Middleware') => app_path("Http/Middleware"),
+                    $this->package->basePath('Middleware') => app_path('Http/Middleware'),
                 ], "{$this->package->shortName()}-middleware");
             }
         }
 
-        if (!empty($this->package->commands)) {
+        if (! empty($this->package->commands)) {
             $this->commands($this->package->commands);
         }
 
-        if (!empty($this->package->consoleCommands) && $this->app->runningInConsole()) {
+        if (! empty($this->package->consoleCommands) && $this->app->runningInConsole()) {
             $this->commands($this->package->consoleCommands);
         }
 
@@ -146,7 +146,6 @@ abstract class PackageServiceProvider extends ServiceProvider
             ], "{$this->package->shortName()}-provider");
         }
 
-
         foreach ($this->package->routeFileNames as $routeFileName) {
             $this->loadRoutesFrom("{$this->package->basePath('/../routes/')}{$routeFileName}.php");
         }
@@ -176,12 +175,12 @@ abstract class PackageServiceProvider extends ServiceProvider
         }
 
         foreach (glob(database_path("{$migrationsPath}*.php")) as $filename) {
-            if ((substr($filename, -$len) === $migrationFileName . '.php')) {
+            if ((substr($filename, -$len) === $migrationFileName.'.php')) {
                 return $filename;
             }
         }
 
-        return database_path($migrationsPath . $now->format('Y_m_d_His') . '_' . Str::of($migrationFileName)->snake()->finish('.php'));
+        return database_path($migrationsPath.$now->format('Y_m_d_His').'_'.Str::of($migrationFileName)->snake()->finish('.php'));
     }
 
     public function registeringPackage()

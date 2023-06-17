@@ -2,8 +2,6 @@
 
 namespace Weward\PorticoBouncer;
 
-use Weward\PorticoBouncer\Package;
-use Weward\PorticoBouncer\PackageServiceProvider;
 use Weward\PorticoBouncer\Commands\InstallCommand;
 
 class PorticoBouncerServiceProvider extends PackageServiceProvider
@@ -16,13 +14,13 @@ class PorticoBouncerServiceProvider extends PackageServiceProvider
 
         // $this->publishMiddlewares();
     }
-    
+
     // public function configurePackage(SpatiePackage $package): void
     public function configurePackage(Package $package): void
     {
         /*
          * Package $package for adding variables and setters
-         * 
+         *
          * PackageServiceProvider for defining the method implementation
          *
          * More info: https://github.com/spatie/laravel-package-tools
