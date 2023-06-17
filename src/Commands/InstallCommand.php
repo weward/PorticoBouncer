@@ -5,7 +5,6 @@ namespace Weward\PorticoBouncer\Commands;
 use Closure;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
-// use Spatie\LaravelPackageTools\Package;
 use Weward\PorticoBouncer\Package;
 
 class InstallCommand extends Command

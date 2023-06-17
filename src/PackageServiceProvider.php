@@ -1,30 +1,6 @@
-<?php 
+<?php
 
 namespace Weward\PorticoBouncer;
-
-// use Spatie\LaravelPackageTools\PackageServiceProvider as SpatiePackageServiceProvider;
-
-// abstract class PackageServiceProvider extends SpatiePackageServiceProvider
-// {
-//     public function boot()
-//     {
-//         parent::boot();
-
-//     }
-
-//     public function publishMiddlewares(): void
-//     {
-//         if ($this->app->runningInConsole()) {
-//             $this->publishes([
-//                 $this->package->basePath('Middleware') => app_path("Http/Middleware"),
-//             ], "{$this->package->shortName()}-middleware");
-//         }
-//     }
-
-
-
-// }
-
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\View;

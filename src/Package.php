@@ -2,30 +2,7 @@
 
 namespace Weward\PorticoBouncer;
 
-// use Illuminate\Support\Str;
-// use Spatie\LaravelPackageTools\Package as OriginalPackage;
-// use Spatie\LaravelPackageTools\Commands\InstallCommand;
-
-// class Package extends OriginalPackage
-// {
-//     public bool $hasMiddlewares = false;
-
-//     public function shortName(): string
-//     {
-//         return Str::after($this->name, 'laravel-');
-//     }
-
-//     public function hasMiddlewares(): static
-//     {
-//         $this->hasMiddlewares = true;
-
-//         return $this;
-//     }
-// }
-
-
 use Illuminate\Support\Str;
-// use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Weward\PorticoBouncer\Commands\InstallCommand;
 
 class Package
