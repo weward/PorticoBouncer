@@ -35,27 +35,32 @@ This also serves as a template
 
 ---
 
-### Using
+### Installation
 
 - Submit project via Packagist
 
 - Composer require weward/porticobounce:^#.#.#
 
-- `php artisan package:discover`
+- `composer dump-auto`
 
-- Add `Weward\PorticoBouncer\PorticoBouncerServiceProvider::class,` to the `'providers'` array of the `config/app.php` file. 
+- `php artisan package:discover`
 
 - `php artisan porticobouncer:install`
 
-- Publish files of this package: 
-    - `php artisan vendor:publish --tag=subpackage-middleware` if would publish middlewares that came with the package to `App\Http\Middleware`
-    - `php artisan vendor:publish --tag=subpackage-controllers` if would publish controllers that came with the package to `App\Http\Controllers`
-    - `php artisan vendor:publish --tag=subpackage-requests` if would publish requests that came with the package to `App\Http\Requests`
-    - `php artisan vendor:publish --tag=subpackage-services` if would publish services that came with the package to `App\Services\Admin`
-    - `php artisan vendor:publish --tag=subpackage-tests` if would publish services that came with the package to `tests\Feature\Admin`
-    - `php artisan vendor:publish --tag=subpackage-package-routes` if would publish routes that came with the package to `routes` *Note:* This will also register the route file `porticobouncer.php` in the app's `RouteServiceProvider.php`
+- Run tests
+    - `php artisan test --filter=ability`
+    - `php artisan test --filter=role`
 
-- 
+#### OR publish files manually:
+
+- `php artisan vendor:publish --tag=subpackage-middleware` if would publish middlewares that came with the package to `App\Http\Middleware`
+- `php artisan vendor:publish --tag=subpackage-controllers` if would publish controllers that came with the package to `App\Http\Controllers`
+- `php artisan vendor:publish --tag=subpackage-requests` if would publish requests that came with the package to `App\Http\Requests`
+- `php artisan vendor:publish --tag=subpackage-services` if would publish services that came with the package to `App\Services\Admin`
+- `php artisan vendor:publish --tag=subpackage-tests` if would publish services that came with the package to `tests\Feature\Admin`
+- `php artisan vendor:publish --tag=subpackage-package-routes` if would publish routes that came with the package to `routes` *Note:* This will also register the route file `porticobouncer.php` in the app's `RouteServiceProvider.php`
+
+- Add `Weward\PorticoBouncer\PorticoBouncerServiceProvider::class,` to the `'providers'` array of the `config/app.php` file. 
 
 ---
 

@@ -31,12 +31,23 @@ class PorticoBouncerServiceProvider extends PackageServiceProvider
          */
         $package
             ->name($this->packageName)
-            ->hasMiddlewares()
+            // ->hasMiddlewares()
+            ->hasControllers()
+            ->hasRequests()
+            ->hasServices()
+            ->hasTests()
+            ->hasPackageRoutes()
             ->hasInstallCommand(function(InstallCommand $command) {
                 $command
                     ->startWith(function(InstallCommand $command) {
                         $command->info("Installing package {$this->packageName}");
                     })
+                    // ->publishMiddlewares()
+                    ->publishControllers()
+                    ->publishRequests()
+                    ->publishServices()
+                    ->publishTests()
+                    ->publishPackageRoutes()
                     ->endWith(function (InstallCommand $command) {
                         $command->info("Done installing package {$this->packageName}");
                     });

@@ -103,7 +103,7 @@ abstract class PackageServiceProvider extends ServiceProvider
             if ($this->package->hasMiddlewares) {
                 $this->publishes([
                     $this->package->basePath('Middleware') => app_path("Http/Middleware"),
-                ], "{$this->package->shortName()}-middleware");
+                ], "{$this->package->shortName()}-middlewares");
             }
 
             if ($this->package->hasControllers) {
@@ -220,10 +220,19 @@ abstract class PackageServiceProvider extends ServiceProvider
 
     public function registerPackageRoutes()
     {
+        $filePathToEdit = app_path('Providers/RouteServiceProvider.php');
         $target = "->group(base_path('routes/web.php'))";
-        $content = file_get_contents(base_path('routes/porticobouncer.php'));
-        $newContent = str_replace($target, $target . "\n\r" . "->group(base_path('routes/porticobouncer.php'))" . "\n\r", $content);
-        file_put_contents(base_path('routes/porticobouncer.php'), $newContent);
+        $append = "->group(base_path('routes/porticobouncer.php'))";
+        $content = file_get_contents($filePathToEdit);
+        // Check if already existing
+        $searchFor = "routes/porticobouncer.php";
+        info($content);
+        // Append if not yet registered
+        if (!str_contains($content, $searchFor)) {
+            info("found!");
+            $newContent = str_replace($target, $target . "\n\t\t\t\t" . $append, $content);
+            file_put_contents($filePathToEdit, $newContent);
+        }
     }
 
     public function registeringPackage()

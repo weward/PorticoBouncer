@@ -18,6 +18,18 @@ class InstallCommand extends Command
 
     protected bool $shouldPublishAssets = false;
 
+    protected bool $shouldPublishMiddlewares = false;
+
+    protected bool $shouldPublishControllers = false;
+
+    protected bool $shouldPublishRequests = false;
+
+    protected bool $shouldPublishServices = false;
+
+    protected bool $shouldPublishTests = false;
+
+    protected bool $shouldPublishPackageRoutes = false;
+
     protected bool $shouldPublishMigrations = false;
 
     protected bool $askToRunMigrations = false;
@@ -60,6 +72,54 @@ class InstallCommand extends Command
 
             $this->callSilently("vendor:publish", [
                 '--tag' => "{$this->package->shortName()}-assets",
+            ]);
+        }
+
+        if ($this->shouldPublishMiddlewares) {
+            $this->comment('Publishing middlewares...');
+
+            $this->callSilently("vendor:publish", [
+                '--tag' => "{$this->package->shortName()}-middlewares",
+            ]);
+        }
+
+        if ($this->shouldPublishControllers) {
+            $this->comment('Publishing controllers...');
+
+            $this->callSilently("vendor:publish", [
+                '--tag' => "{$this->package->shortName()}-controllers",
+            ]);
+        }
+
+        if ($this->shouldPublishRequests) {
+            $this->comment('Publishing requests...');
+
+            $this->callSilently("vendor:publish", [
+                '--tag' => "{$this->package->shortName()}-requests",
+            ]);
+        }
+
+        if ($this->shouldPublishServices) {
+            $this->comment('Publishing services...');
+
+            $this->callSilently("vendor:publish", [
+                '--tag' => "{$this->package->shortName()}-services",
+            ]);
+        }
+
+        if ($this->shouldPublishTests) {
+            $this->comment('Publishing tests...');
+
+            $this->callSilently("vendor:publish", [
+                '--tag' => "{$this->package->shortName()}-tests",
+            ]);
+        }
+
+        if ($this->shouldPublishPackageRoutes) {
+            $this->comment('Publishing package routes...');
+
+            $this->callSilently("vendor:publish", [
+                '--tag' => "{$this->package->shortName()}-package-routes",
             ]);
         }
 
@@ -118,6 +178,48 @@ class InstallCommand extends Command
     public function publishAssets(): self
     {
         $this->shouldPublishAssets = true;
+
+        return $this;
+    }
+
+    public function publishMiddlewares(): self
+    {
+        $this->shouldPublishMiddlewares = true;
+
+        return $this;
+    }
+
+    public function publishControllers(): self
+    {
+        $this->shouldPublishControllers = true;
+
+        return $this;
+    }
+
+    public function publishRequests(): self
+    {
+        $this->shouldPublishRequests = true;
+
+        return $this;
+    }
+
+    public function publishServices(): self
+    {
+        $this->shouldPublishServices = true;
+
+        return $this;
+    }
+
+    public function publishTests(): self
+    {
+        $this->shouldPublishTests = true;
+
+        return $this;
+    }
+
+    public function publishPackageRoutes(): self
+    {
+        $this->shouldPublishPackageRoutes = true;
 
         return $this;
     }
