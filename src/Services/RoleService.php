@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Services\Admin;
 
@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Silber\Bouncer\Database\Role;
 
-class RoleService 
+class RoleService
 {
     protected $table = 'roles';
 
@@ -18,7 +18,7 @@ class RoleService
             $query->where('name', $params['name']);
             $query->orWhere('title', $params['name']);
         });
-        
+
         return $q->paginate();
     }
 
@@ -31,15 +31,14 @@ class RoleService
             ]);
 
             info($q);
-            
+
             return $q;
         } catch (\Throwable $th) {
-            info($th->getMessage());    
+            info($th->getMessage());
         }
 
         return false;
     }
-    
 
     public function update($req, $entity)
     {
@@ -60,8 +59,8 @@ class RoleService
     {
         try {
             DB::table($this->table)
-            ->where('id', $id)
-            ->delete();
+                ->where('id', $id)
+                ->delete();
 
             return true;
         } catch (\Throwable $th) {
@@ -83,6 +82,4 @@ class RoleService
 
         return $role;
     }
-
-
 }

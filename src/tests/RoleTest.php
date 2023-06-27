@@ -3,13 +3,11 @@
 namespace Tests\Feature\Feature\Admin;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
 use Bouncer;
-use Silber\Bouncer\BouncerFacade;
-use Silber\Bouncer\Database\Role;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
+use Silber\Bouncer\Database\Role;
+use Tests\TestCase;
 
 class RoleTest extends TestCase
 {
@@ -32,11 +30,11 @@ class RoleTest extends TestCase
         $user = User::factory()->withCompany()->create();
         Bouncer::assign('admin')->to($user);
         Bouncer::assign('moderator')->to($user);
-        
+
         $res = $this->actingAs($user)->get(route('roles.index'));
 
         $res->assertInertia(function (Assert $page) use ($count) {
-            $page->has('roles.data', $count); 
+            $page->has('roles.data', $count);
         });
     }
 
@@ -57,14 +55,14 @@ class RoleTest extends TestCase
         $title = 'Admin';
 
         $res = $this->actingAs($user)
-        ->post(
-            route('roles.store'), 
-            [
-                'name' => $name,
-                'title' => $title,
-            ]
-        );
-        
+            ->post(
+                route('roles.store'),
+                [
+                    'name' => $name,
+                    'title' => $title,
+                ]
+            );
+
         $res->assertJsonPath('name', 'admin');
         $res->assertJsonPath('title', 'Admin');
     }
@@ -74,7 +72,6 @@ class RoleTest extends TestCase
         $user = User::factory()->create();
         $name = 'admin';
         $title = 'Admin';
-
 
         Role::create([
             'id' => 1,
@@ -150,6 +147,4 @@ class RoleTest extends TestCase
 
         $res->assertStatus(200);
     }
-
-
 }

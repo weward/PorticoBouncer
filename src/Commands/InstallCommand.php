@@ -44,9 +44,9 @@ class InstallCommand extends Command
 
     public function __construct(Package $package)
     {
-        $this->signature = $package->shortName() . ':install';
+        $this->signature = $package->shortName().':install';
 
-        $this->description = 'Install ' . $package->name;
+        $this->description = 'Install '.$package->name;
 
         $this->package = $package;
 
@@ -62,7 +62,7 @@ class InstallCommand extends Command
         if ($this->shouldPublishConfigFile) {
             $this->comment('Publishing config file...');
 
-            $this->callSilently("vendor:publish", [
+            $this->callSilently('vendor:publish', [
                 '--tag' => "{$this->package->shortName()}-config",
             ]);
         }
@@ -70,7 +70,7 @@ class InstallCommand extends Command
         if ($this->shouldPublishAssets) {
             $this->comment('Publishing assets...');
 
-            $this->callSilently("vendor:publish", [
+            $this->callSilently('vendor:publish', [
                 '--tag' => "{$this->package->shortName()}-assets",
             ]);
         }
@@ -126,7 +126,7 @@ class InstallCommand extends Command
         if ($this->shouldPublishMigrations) {
             $this->comment('Publishing migration...');
 
-            $this->callSilently("vendor:publish", [
+            $this->callSilently('vendor:publish', [
                 '--tag' => "{$this->package->shortName()}-migrations",
             ]);
         }
@@ -270,32 +270,32 @@ class InstallCommand extends Command
     {
         $providerName = $this->package->publishableProviderName;
 
-        if (!$providerName) {
+        if (! $providerName) {
             return $this;
         }
 
-        $this->callSilent('vendor:publish', ['--tag' => $this->package->shortName() . '-provider']);
+        $this->callSilent('vendor:publish', ['--tag' => $this->package->shortName().'-provider']);
 
         $namespace = Str::replaceLast('\\', '', $this->laravel->getNamespace());
 
         $appConfig = file_get_contents(config_path('app.php'));
 
-        $class = '\\Providers\\' . $providerName . '::class';
+        $class = '\\Providers\\'.$providerName.'::class';
 
-        if (Str::contains($appConfig, $namespace . $class)) {
+        if (Str::contains($appConfig, $namespace.$class)) {
             return $this;
         }
 
         file_put_contents(config_path('app.php'), str_replace(
             "{$namespace}\\Providers\\BroadcastServiceProvider::class,",
-            "{$namespace}\\Providers\\BroadcastServiceProvider::class," . PHP_EOL . "        {$namespace}{$class},",
+            "{$namespace}\\Providers\\BroadcastServiceProvider::class,".PHP_EOL."        {$namespace}{$class},",
             $appConfig
         ));
 
-        file_put_contents(app_path('Providers/' . $providerName . '.php'), str_replace(
+        file_put_contents(app_path('Providers/'.$providerName.'.php'), str_replace(
             "namespace App\Providers;",
             "namespace {$namespace}\Providers;",
-            file_get_contents(app_path('Providers/' . $providerName . '.php'))
+            file_get_contents(app_path('Providers/'.$providerName.'.php'))
         ));
 
         return $this;

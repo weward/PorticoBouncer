@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Silber\Bouncer\Database\Ability;
 use App\Http\Requests\Admin\AbilityRequest;
 use App\Services\Admin\AbilityService;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Silber\Bouncer\Database\Ability;
 
 class AbilityController extends Controller
 {
-    public function __construct(protected AbilityService $service) {}
+    public function __construct(protected AbilityService $service)
+    {
+    }
 
     public function index(Request $request)
     {
@@ -38,7 +40,7 @@ class AbilityController extends Controller
     {
         $ability = $this->service->append($ability, [
             'created_at_formatted',
-            'updated_at_formatted'
+            'updated_at_formatted',
         ]);
 
         return Inertia::render('Admin/Abilities/Show', [
@@ -66,6 +68,4 @@ class AbilityController extends Controller
 
         return response()->jsonApi($res);
     }
-
-
 }

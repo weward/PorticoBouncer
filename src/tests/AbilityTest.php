@@ -2,13 +2,12 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Models\User;
+use Bouncer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Models\User;
-use Tests\TestCase;
-use Bouncer;
 use Silber\Bouncer\Database\Ability;
+use Tests\TestCase;
 
 class AbilityTest extends TestCase
 {
@@ -25,7 +24,6 @@ class AbilityTest extends TestCase
         $res->assertStatus(200);
     }
 
-
     public function test_list_all_abilities(): void
     {
         $count = 2;
@@ -33,7 +31,6 @@ class AbilityTest extends TestCase
         Bouncer::assign('admin')->to($user);
         Bouncer::allow('admin')->to('edit.users');
         Bouncer::allow($user)->to('show.users');
-        
 
         $res = $this->actingAs($user)->get(route('abilities.index'));
 
@@ -76,7 +73,6 @@ class AbilityTest extends TestCase
         $user = User::factory()->create();
         $name = 'admin';
         $title = 'Admin';
-
 
         Ability::create([
             'id' => 1,
@@ -152,6 +148,4 @@ class AbilityTest extends TestCase
 
         $res->assertStatus(200);
     }
-
-
 }

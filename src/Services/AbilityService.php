@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Services\Admin;
 
@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Silber\Bouncer\Database\Ability;
 
-class AbilityService 
+class AbilityService
 {
     protected $table = 'abilities';
 
@@ -39,7 +39,6 @@ class AbilityService
 
         return false;
     }
-
 
     public function update($req, $entity)
     {
@@ -83,5 +82,4 @@ class AbilityService
 
         return $role;
     }
-
 }

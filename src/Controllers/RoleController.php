@@ -11,7 +11,9 @@ use Silber\Bouncer\Database\Role;
 
 class RoleController extends Controller
 {
-    public function __construct(protected RoleService $service) {}
+    public function __construct(protected RoleService $service)
+    {
+    }
 
     public function index(Request $request)
     {
@@ -38,7 +40,7 @@ class RoleController extends Controller
     {
         $role = $this->service->append($role, [
             'created_at_formatted',
-            'updated_at_formatted'
+            'updated_at_formatted',
         ]);
 
         return Inertia::render('Admin/Roles/Show', [
@@ -59,12 +61,11 @@ class RoleController extends Controller
 
         return response()->jsonApi($res);
     }
-    
+
     public function destroy(Role $role)
     {
         $res = $this->service->destroy($role->id);
 
         return response()->jsonApi($res);
     }
-
 }

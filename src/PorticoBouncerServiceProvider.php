@@ -3,8 +3,6 @@
 namespace Weward\PorticoBouncer;
 
 // use Spatie\LaravelPackageTools\Package as SpatiePackage;
-use Weward\PorticoBouncer\Package;
-use Weward\PorticoBouncer\PackageServiceProvider;
 // use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Weward\PorticoBouncer\Commands\InstallCommand;
 
@@ -18,13 +16,13 @@ class PorticoBouncerServiceProvider extends PackageServiceProvider
 
         // $this->publishMiddlewares();
     }
-    
+
     // public function configurePackage(SpatiePackage $package): void
     public function configurePackage(Package $package): void
     {
         /*
          * Package $package for default Spatie methods
-         * 
+         *
          * For custom methods/properties, use the Weward/PorticoBouncer/PackageServiceProvider
          *
          * More info: https://github.com/spatie/laravel-package-tools
@@ -39,7 +37,7 @@ class PorticoBouncerServiceProvider extends PackageServiceProvider
             ->hasPackageRoutes()
             ->hasInstallCommand(function(InstallCommand $command) {
                 $command
-                    ->startWith(function(InstallCommand $command) {
+                    ->startWith(function (InstallCommand $command) {
                         $command->info("Installing package {$this->packageName}");
                     })
                     // ->publishMiddlewares()
