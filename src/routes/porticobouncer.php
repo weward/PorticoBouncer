@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Silber\Bouncer\Database\Role;
-use Silber\Bouncer\Database\Ability;
-use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\AbilityController;
+use App\Http\Controllers\Admin\RoleController;
+use Illuminate\Support\Facades\Route;
+use Silber\Bouncer\Database\Ability;
+use Silber\Bouncer\Database\Role;
 
 Route::bind('role', function ($entityId) {
     return Role::findOrFail($entityId);
