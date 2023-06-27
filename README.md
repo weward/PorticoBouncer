@@ -4,6 +4,61 @@ This also serves as a template
 
 ---
 
+# Requirements
+
+- Install Silber/Bouncer package
+
+```sh
+    composer require silber/bouncer:^1.0
+```
+
+- Add `HasRolesAndAbilities` trait in `User.php`
+
+```php
+    use Silber\Bouncer\Database\HasRolesAndAbilities;
+
+    use HasRolesAndAbilities;
+```
+
+- Publish Silber/Bouncer's migration 
+
+```sh
+    php artisan vendor:publish --tag="bouncer.migrations"
+```
+
+- Run the migration
+
+```sh 
+    php artisan migrate
+```
+
+
+---
+
+### Using
+
+- Submit project via Packagist
+
+- Composer require weward/porticobounce:^#.#.#
+
+- `php artisan package:discover`
+
+- Add `Weward\PorticoBouncer\PorticoBouncerServiceProvider::class,` to the `'providers'` array of the `config/app.php` file. 
+
+- `php artisan porticobouncer:install`
+
+- Publish files of this package: 
+    - `php artisan vendor:publish --tag=subpackage-middleware` if would publish middlewares that came with the package to `App\Http\Middleware`
+    - `php artisan vendor:publish --tag=subpackage-controllers` if would publish controllers that came with the package to `App\Http\Controllers`
+    - `php artisan vendor:publish --tag=subpackage-requests` if would publish requests that came with the package to `App\Http\Requests`
+    - `php artisan vendor:publish --tag=subpackage-services` if would publish services that came with the package to `App\Services\Admin`
+    - `php artisan vendor:publish --tag=subpackage-tests` if would publish services that came with the package to `tests\Feature\Admin`
+    - `php artisan vendor:publish --tag=subpackage-package-routes` if would publish routes that came with the package to `routes` *Note:* This will also register the route file `porticobouncer.php` in the app's `RouteServiceProvider.php`
+
+- 
+
+---
+
 ### Creating a new package
 
 - Use Spatie package-skeleton-laravel to install and configure a new package (+namespace|etc)
@@ -21,21 +76,6 @@ This also serves as a template
 - Add the variables in the PackageServiceProvider
 
 - Call the method in the configurePackage() method of the PackageNameServiceProvider
-
-
-### Using
-
-- Submit project via Packagist
-
-- Composer require
-
-- `php artisan package:discover`
-
-- Add The Package to `'providers'` array of the `config/app.php` file.
-
-- `php artisan packageName:install`
-
-- `php artisan vendor:publish --tag=subpackage-middleware` if would publish middlewares that came with the package to `App\Http\Middleware`
 
 ---
 

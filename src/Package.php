@@ -21,6 +21,16 @@ class Package
 
     public bool $hasMiddlewares = false;
 
+    public bool $hasControllers = false;
+
+    public bool $hasRequests = false;
+
+    public bool $hasServices = false;
+
+    public bool $hasTests = false;
+
+    public bool $hasPackageRoutes = false;
+
     public bool $runsMigrations = false;
 
     public array $migrationFileNames = [];
@@ -52,7 +62,7 @@ class Package
     {
         $configFileName = $configFileName ?? $this->shortName();
 
-        if (! is_array($configFileName)) {
+        if (!is_array($configFileName)) {
             $configFileName = [$configFileName];
         }
 
@@ -100,7 +110,7 @@ class Package
         return $this;
     }
 
-    public function hasViewComponents(string $prefix, ...$viewComponentNames): static
+    public function hasViewComponents(string $prefix,  ...$viewComponentNames): static
     {
         foreach ($viewComponentNames as $componentName) {
             $this->viewComponents[$componentName] = $prefix;
@@ -118,7 +128,7 @@ class Package
 
     public function hasViewComposer($view, $viewComposer): static
     {
-        if (! is_array($view)) {
+        if (!is_array($view)) {
             $view = [$view];
         }
 
@@ -146,6 +156,41 @@ class Package
     public function hasMiddlewares(): static
     {
         $this->hasMiddlewares = true;
+
+        return $this;
+    }
+
+    public function hasControllers(): static
+    {
+        $this->hasControllers = true;
+
+        return $this;
+    }
+
+    public function hasRequests(): static
+    {
+        $this->hasRequests = true;
+
+        return $this;
+    }
+
+    public function hasServices(): static
+    {
+        $this->hasServices = true;
+
+        return $this;
+    }
+
+    public function hasTests(): static
+    {
+        $this->hasTests = true;
+
+        return $this;
+    }
+
+    public function hasPackageRoutes(): static
+    {
+        $this->hasPackageRoutes = true;
 
         return $this;
     }
@@ -222,7 +267,7 @@ class Package
             return $this->basePath;
         }
 
-        return $this->basePath.DIRECTORY_SEPARATOR.ltrim($directory, DIRECTORY_SEPARATOR);
+        return $this->basePath . DIRECTORY_SEPARATOR . ltrim($directory, DIRECTORY_SEPARATOR);
     }
 
     public function viewNamespace(): string

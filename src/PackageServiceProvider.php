@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 namespace Weward\PorticoBouncer;
 
@@ -48,11 +48,11 @@ abstract class PackageServiceProvider extends ServiceProvider
         $this->bootingPackage();
 
         if ($this->package->hasTranslations) {
-            $langPath = 'vendor/'.$this->package->shortName();
+            $langPath = 'vendor/' . $this->package->shortName();
 
             $langPath = (function_exists('lang_path'))
                 ? lang_path($langPath)
-                : resource_path('lang/'.$langPath);
+                : resource_path('lang/' . $langPath);
         }
 
         if ($this->app->runningInConsole()) {
@@ -71,7 +71,7 @@ abstract class PackageServiceProvider extends ServiceProvider
             $now = Carbon::now();
             foreach ($this->package->migrationFileNames as $migrationFileName) {
                 $filePath = $this->package->basePath("/../database/migrations/{$migrationFileName}.php");
-                if (! file_exists($filePath)) {
+                if (!file_exists($filePath)) {
                     // Support for the .stub file extension
                     $filePath .= '.stub';
                 }
@@ -102,16 +102,50 @@ abstract class PackageServiceProvider extends ServiceProvider
 
             if ($this->package->hasMiddlewares) {
                 $this->publishes([
-                    $this->package->basePath('Middleware') => app_path('Http/Middleware'),
+                    $this->package->basePath('Middleware') => app_path("Http/Middleware"),
                 ], "{$this->package->shortName()}-middleware");
             }
+
+            if ($this->package->hasControllers) {
+                $this->publishes([
+                    $this->package->basePath('Controllers') => app_path("Http/Controllers/Admin"),
+                ], "{$this->package->shortName()}-controllers");
+            }
+
+            if ($this->package->hasRequests) {
+                $this->publishes([
+                    $this->package->basePath('Requests') => app_path("Http/Requests/Admin"),
+                ], "{$this->package->shortName()}-requests");
+            }
+
+            if ($this->package->hasServices) {
+                $this->publishes([
+                    $this->package->basePath('Services') => app_path("Services/Admin"),
+                ], "{$this->package->shortName()}-services");
+            }
+
+            if ($this->package->hasTests) {
+                $this->publishes([
+                    $this->package->basePath('tests') => base_path("tests/Feature/Admin"),
+                ], "{$this->package->shortName()}-tests");
+            }
+
+            if ($this->package->hasPackageRoutes) {
+                $this->publishes([
+                    $this->package->basePath('routes') => base_path("routes"),
+                ], "{$this->package->shortName()}-package-routes");
+
+                // Register Package Routes in App/Providers/RouteServiceProvider
+                $this->registerPackageRoutes();
+            }
+
         }
 
-        if (! empty($this->package->commands)) {
+        if (!empty($this->package->commands)) {
             $this->commands($this->package->commands);
         }
 
-        if (! empty($this->package->consoleCommands) && $this->app->runningInConsole()) {
+        if (!empty($this->package->consoleCommands) && $this->app->runningInConsole()) {
             $this->commands($this->package->consoleCommands);
         }
 
@@ -146,6 +180,7 @@ abstract class PackageServiceProvider extends ServiceProvider
             ], "{$this->package->shortName()}-provider");
         }
 
+
         foreach ($this->package->routeFileNames as $routeFileName) {
             $this->loadRoutesFrom("{$this->package->basePath('/../routes/')}{$routeFileName}.php");
         }
@@ -175,12 +210,20 @@ abstract class PackageServiceProvider extends ServiceProvider
         }
 
         foreach (glob(database_path("{$migrationsPath}*.php")) as $filename) {
-            if ((substr($filename, -$len) === $migrationFileName.'.php')) {
+            if ((substr($filename, -$len) === $migrationFileName . '.php')) {
                 return $filename;
             }
         }
 
-        return database_path($migrationsPath.$now->format('Y_m_d_His').'_'.Str::of($migrationFileName)->snake()->finish('.php'));
+        return database_path($migrationsPath . $now->format('Y_m_d_His') . '_' . Str::of($migrationFileName)->snake()->finish('.php'));
+    }
+
+    public function registerPackageRoutes()
+    {
+        $target = "->group(base_path('routes/web.php'))";
+        $content = file_get_contents(base_path('routes/porticobouncer.php'));
+        $newContent = str_replace($target, $target . "\n\r" . "->group(base_path('routes/porticobouncer.php'))" . "\n\r", $content);
+        file_put_contents(base_path('routes/porticobouncer.php'), $newContent);
     }
 
     public function registeringPackage()
