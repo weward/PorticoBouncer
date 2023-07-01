@@ -1,11 +1,11 @@
-<?php 
+<?php
 
 namespace App\Services\Admin;
 
-use Carbon\Carbon;
 use App\Models\Admin\Ability;
+use Carbon\Carbon;
 
-class AbilityService 
+class AbilityService
 {
     public function filter($params)
     {
@@ -36,7 +36,6 @@ class AbilityService
 
         return false;
     }
-
 
     public function update($req, $entity)
     {
@@ -81,8 +80,8 @@ class AbilityService
 
     /**
      * Returns grouped abilities based on prefix (Ability's title)
-     * ie, 
-     *  users => [users.create, users.edit], 
+     * ie,
+     *  users => [users.create, users.edit],
      *  reports => [reports.create, reports.download]
      */
     public function getAll($grouped = false)
@@ -91,5 +90,4 @@ class AbilityService
 
         return $grouped ? groupByKey($abilities) : $abilities;
     }
-
 }

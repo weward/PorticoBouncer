@@ -102,7 +102,7 @@ abstract class PackageServiceProvider extends ServiceProvider
 
             if ($this->package->hasMiddlewares) {
                 $this->publishes([
-                    $this->package->basePath('Middleware') => app_path("Http/Middleware"),
+                    $this->package->basePath('Middleware') => app_path('Http/Middleware'),
                 ], "{$this->package->shortName()}-middlewares");
             }
 
@@ -248,10 +248,10 @@ abstract class PackageServiceProvider extends ServiceProvider
         $append = "->group(base_path('routes/porticobouncer.php'))";
         $content = file_get_contents($filePathToEdit);
         // Check if already existing
-        $searchFor = "routes/porticobouncer.php";
+        $searchFor = 'routes/porticobouncer.php';
         // Append if not yet registered
-        if (!str_contains($content, $searchFor)) {
-            $newContent = str_replace($target, $target . "\n\t\t\t\t" . $append, $content);
+        if (! str_contains($content, $searchFor)) {
+            $newContent = str_replace($target, $target."\n\t\t\t\t".$append, $content);
             file_put_contents($filePathToEdit, $newContent);
         }
     }
@@ -264,10 +264,10 @@ abstract class PackageServiceProvider extends ServiceProvider
 
         $content = file_get_contents($filePathToEdit);
 
-        $searchFor = "Override Silber/Bouncer";
+        $searchFor = 'Override Silber/Bouncer';
 
-        if (!str_contains($content, $searchFor)) {
-            $newContent = str_replace($target, $target . "\n\t\t" . $append, $content);
+        if (! str_contains($content, $searchFor)) {
+            $newContent = str_replace($target, $target."\n\t\t".$append, $content);
             file_put_contents($filePathToEdit, $newContent);
         }
     }

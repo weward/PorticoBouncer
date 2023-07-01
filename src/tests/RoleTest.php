@@ -2,14 +2,13 @@
 
 namespace Tests\Feature\Feature\Admin;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
-use Bouncer;
-use App\Models\Admin\Role;
 use App\Models\Admin\Ability;
+use App\Models\Admin\Role;
+use App\Models\User;
+use Bouncer;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
+use Tests\TestCase;
 
 class RoleTest extends TestCase
 {
@@ -32,11 +31,11 @@ class RoleTest extends TestCase
         $user = User::factory()->withCompany()->create();
         Bouncer::assign('admin')->to($user);
         Bouncer::assign('moderator')->to($user);
-        
+
         $res = $this->actingAs($user)->get(route('roles.index'));
 
         $res->assertInertia(function (Assert $page) use ($count) {
-            $page->has('roles.data', $count); 
+            $page->has('roles.data', $count);
         });
     }
 
@@ -57,8 +56,7 @@ class RoleTest extends TestCase
 
         $res = $this->actingAs($user)->get(route('roles.create'));
 
-
-        $res->assertInertia(fn(Assert $page) => $page->has('abilities', 1));
+        $res->assertInertia(fn (Assert $page) => $page->has('abilities', 1));
     }
 
     public function test_can_store_a_new_role()
@@ -82,15 +80,15 @@ class RoleTest extends TestCase
         ]);
 
         $res = $this->actingAs($user)
-        ->post(
-            route('roles.store'), 
-            [
-                'name' => $name,
-                'title' => $title,
-                'abilities' => [1, 2]
-            ]
-        );
-        
+            ->post(
+                route('roles.store'),
+                [
+                    'name' => $name,
+                    'title' => $title,
+                    'abilities' => [1, 2],
+                ]
+            );
+
         $res->assertJsonPath('name', $name);
         $res->assertJsonPath('title', $title);
         $res->assertJsonCount(2, 'abilities');
@@ -161,7 +159,7 @@ class RoleTest extends TestCase
         $res = $this->actingAs($user)
             ->get(route('roles.show', $role->id));
 
-        $res->assertInertia(function (Assert $page) use ($name, $title) {
+        $res->assertInertia(function (Assert $page) {
             $page->has('role.abilities', 1); // with one ability (old.ability)
         });
 
@@ -175,7 +173,7 @@ class RoleTest extends TestCase
             ->put(route('roles.update', $role->id), [
                 'name' => $updatedName,
                 'title' => $title,
-                'abilities' => [1, 2]
+                'abilities' => [1, 2],
             ]);
 
         $res->assertJsonPath('name', $updatedName);
@@ -197,6 +195,4 @@ class RoleTest extends TestCase
 
         $res->assertStatus(200);
     }
-
-
 }

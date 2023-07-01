@@ -31,7 +31,7 @@ class RoleRequest extends FormRequest
         ];
     }
 
-    public function messages(): array 
+    public function messages(): array
     {
         return [
             'title.required' => 'Please provide a title',
