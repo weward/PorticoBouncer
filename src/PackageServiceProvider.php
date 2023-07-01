@@ -134,27 +134,18 @@ abstract class PackageServiceProvider extends ServiceProvider
                 $this->publishes([
                     $this->package->basePath('routes') => base_path('routes'),
                 ], "{$this->package->shortName()}-package-routes");
-
-                // Register Package Routes in App/Providers/RouteServiceProvider
-                $this->registerPackageRoutes();
             }
 
             if ($this->package->hasModels) {
                 $this->publishes([
                     $this->package->basePath('Models') => app_path('Models/Admin'),
                 ], "{$this->package->shortName()}-models");
-
-                // Register custom models in App/Providers/AppServiceProvider
-                $this->registerCustomModelsInAppServiceProvider();
             }
 
             if ($this->package->hasTraits) {
                 $this->publishes([
                     $this->package->basePath('Traits') => app_path('Traits'),
                 ], "{$this->package->shortName()}-traits");
-
-                // Include trait in App/Models/User
-                $this->insertTraitInUserModel();
             }
 
             if ($this->package->hasFactories) {
@@ -239,55 +230,6 @@ abstract class PackageServiceProvider extends ServiceProvider
         }
 
         return database_path($migrationsPath.$now->format('Y_m_d_His').'_'.Str::of($migrationFileName)->snake()->finish('.php'));
-    }
-
-    public function registerPackageRoutes()
-    {
-        $filePathToEdit = app_path('Providers/RouteServiceProvider.php');
-        $target = "->group(base_path('routes/web.php'))";
-        $append = "->group(base_path('routes/porticobouncer.php'))";
-        $content = file_get_contents($filePathToEdit);
-        // Check if already existing
-        $searchFor = 'routes/porticobouncer.php';
-        // Append if not yet registered
-        if (! str_contains($content, $searchFor)) {
-            $newContent = str_replace($target, $target."\n\t\t\t\t".$append, $content);
-            file_put_contents($filePathToEdit, $newContent);
-        }
-    }
-
-    public function registerCustomModelsInAppServiceProvider()
-    {
-        $filePathToEdit = app_path('Providers/AppServiceProvider.php');
-        $target = "public function booth(): void\n{";
-        $append = "// Override Silber/Bouncer\nBouncer::useAbilityModel(\App\Models\Admin\Ability::class);\nBouncer::useRoleModel(\App\Models\Admin\Role::class);\n\n";
-
-        $content = file_get_contents($filePathToEdit);
-
-        $searchFor = 'Override Silber/Bouncer';
-
-        if (! str_contains($content, $searchFor)) {
-            $newContent = str_replace($target, $target."\n\t\t".$append, $content);
-            file_put_contents($filePathToEdit, $newContent);
-        }
-    }
-
-    public function insertTraitInUserModel()
-    {
-        $filePathToEdit = app_path('Models/User.php');
-        $content = file_get_contents($filePathToEdit);
-        $searchFor = "porticobouncer";
-
-        if (!str_contains($content, $searchFor)) {
-            $pattern = '/^(.*\buse\b.*?;)(?!.*\buse\b.*?;)/s';
-            $append = "$1 \n\tuse \App\Traits\HasPorticoBouncerPermissions; // porticobouncer";
-            // $target = "class User extends Authenticable\n{\nuse apples;\nuse banana;\nuse cat;";
-
-            $newContent = preg_replace($pattern, $append, $content);
-
-            file_put_contents($filePathToEdit, $newContent);
-        }
-
     }
 
     public function registeringPackage()

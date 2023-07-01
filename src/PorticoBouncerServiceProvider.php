@@ -2,7 +2,6 @@
 
 namespace Weward\PorticoBouncer;
 
-// use Spatie\LaravelPackageTools\Package as SpatiePackage;
 // use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Weward\PorticoBouncer\Commands\InstallCommand;
 
@@ -13,8 +12,6 @@ class PorticoBouncerServiceProvider extends PackageServiceProvider
     public function boot()
     {
         parent::boot();
-
-        // $this->publishMiddlewares();
     }
 
     // public function configurePackage(SpatiePackage $package): void
@@ -38,12 +35,10 @@ class PorticoBouncerServiceProvider extends PackageServiceProvider
             ->hasModels()
             ->hasTraits()
             ->hasFactories()
-            ->hasInstallCommand(function(InstallCommand $command) {
+            ->hasInstallCommand(function(InstallCommand $command, $packageInstance) {
                 $command
                     ->startWith(function (InstallCommand $command) {
                         $command->info("Installing package {$this->packageName}");
-                        $command->askIfShouldInstallEverythingAutomatically();
-                        $command->info("Oops! it continued");
                     })
                     // ->publishMiddlewares()
                     ->publishControllers()

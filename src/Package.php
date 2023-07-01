@@ -88,7 +88,7 @@ class Package
     {
         $installCommand = new InstallCommand($this);
 
-        $callable($installCommand);
+        $callable($installCommand, $this);
 
         $this->consoleCommands[] = $installCommand;
 

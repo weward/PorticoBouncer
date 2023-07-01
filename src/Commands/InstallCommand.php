@@ -44,8 +44,6 @@ class InstallCommand extends Command
 
     protected ?string $starRepo = null;
 
-    protected ?string $shouldInstallEverything = null;
-
     public ?Closure $endWith = null;
 
     public $hidden = true;
@@ -129,6 +127,8 @@ class InstallCommand extends Command
             $this->callSilently('vendor:publish', [
                 '--tag' => "{$this->package->shortName()}-package-routes",
             ]);
+
+            $this->registerPackageRoutes();
         }
 
         if ($this->shouldPublishModels) {
@@ -137,6 +137,8 @@ class InstallCommand extends Command
             $this->callSilently('vendor:publish', [
                 '--tag' => "{$this->package->shortName()}-models",
             ]);
+
+            $this->registerCustomModelsInAppServiceProvider();
         }
 
         if ($this->shouldPublishTraits) {
@@ -145,6 +147,8 @@ class InstallCommand extends Command
             $this->callSilently('vendor:publish', [
                 '--tag' => "{$this->package->shortName()}-traits",
             ]);
+
+            $this->insertTraitInUserModel();
         }
 
         if ($this->shouldPublishFactories) {
@@ -190,12 +194,6 @@ class InstallCommand extends Command
                 if (PHP_OS_FAMILY == 'Linux') {
                     exec("xdg-open {$repoUrl}");
                 }
-            }
-        }
-
-        if ($this->shouldInstallEverything) {
-            if ($this->confirm('Would you like to auto-install everything? (Select NO to publish each feature one by one)')) {
-                return;
             }
         }
 
@@ -311,13 +309,6 @@ class InstallCommand extends Command
         return $this;
     }
 
-    public function askIfShouldInstallEverythingAutomatically(): self
-    {
-        $this->shouldInstallEverything = true;
-
-        return $this;
-    }
-
     public function startWith($callable): self
     {
         $this->startWith = $callable;
@@ -365,5 +356,53 @@ class InstallCommand extends Command
         ));
 
         return $this;
+    }
+
+    public function registerPackageRoutes()
+    {
+        $filePathToEdit = app_path('Providers/RouteServiceProvider.php');
+        $target = "->group(base_path('routes/web.php'))";
+        $append = "->group(base_path('routes/porticobouncer.php'))";
+        $content = file_get_contents($filePathToEdit);
+        // Check if already existing
+        $searchFor = 'routes/porticobouncer.php';
+        // Append if not yet registered
+        if (!str_contains($content, $searchFor)) {
+            $newContent = str_replace($target, $target . "\n\t\t\t\t" . $append, $content);
+            file_put_contents($filePathToEdit, $newContent);
+        }
+    }
+
+    public function registerCustomModelsInAppServiceProvider()
+    {
+        $filePathToEdit = app_path('Providers/AppServiceProvider.php');
+        $target = "porticobouncer";
+        $append = "// Override Silber/Bouncer\n\t\tBouncer::useAbilityModel(\App\Models\Admin\Ability::class);\n\t\tBouncer::useRoleModel(\App\Models\Admin\Role::class);\n\n";
+
+        $content = file_get_contents($filePathToEdit);
+
+        $searchFor = 'Override Silber/Bouncer';
+
+        if (!str_contains($content, $searchFor)) {
+            $newContent = str_replace($target, $target . "\n\t\t" . $append, $content);
+            file_put_contents($filePathToEdit, $newContent);
+        }
+    }
+
+    public function insertTraitInUserModel()
+    {
+        $filePathToEdit = app_path('Models/User.php');
+        $content = file_get_contents($filePathToEdit);
+        $searchFor = "porticobouncer";
+
+        if (!str_contains($content, $searchFor)) {
+            $pattern = '/^(.*\buse\b.*?;)(?!.*\buse\b.*?;)/s';
+            $append = "$1 \n\tuse \App\Traits\HasPorticoBouncerPermissions; // porticobouncer";
+            // $target = "class User extends Authenticable\n{\nuse apples;\nuse banana;\nuse cat;";
+
+            $newContent = preg_replace($pattern, $append, $content);
+
+            file_put_contents($filePathToEdit, $newContent);
+        }
     }
 }
