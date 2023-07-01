@@ -4,13 +4,11 @@ namespace Tests\Feature\Admin;
 
 use App\Models\Admin\Ability;
 use App\Models\Admin\Role;
-use Bouncer;
-use Tests\TestCase;
 use App\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
-use Inertia\Testing\AssertableInertia as Assert;
+use Bouncer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Testing\Fluent\AssertableJson;
+use Inertia\Testing\AssertableInertia as Assert;
+use Tests\TestCase;
 
 class UserPermissionTest extends TestCase
 {
@@ -63,7 +61,7 @@ class UserPermissionTest extends TestCase
         });
     }
 
-    public function test_can_update_user_permissions_with_new_role(): void 
+    public function test_can_update_user_permissions_with_new_role(): void
     {
         $user = User::factory()->create();
         // Assign abilities to roles
@@ -109,8 +107,8 @@ class UserPermissionTest extends TestCase
         $rolesCount = $roles->count();
         $roles = $roles->toArray();
         // remove the last one
-        unset($roles[$rolesCount - 1]); 
-        
+        unset($roles[$rolesCount - 1]);
+
         $rolesArray = collect($roles)->pluck('id')->toArray();
         $specialPermissionsArray = [];
 
@@ -168,13 +166,13 @@ class UserPermissionTest extends TestCase
         $rolesArray = $user->roles()->get()->pluck('id')->toArray();
         $specialAbilities = Ability::factory()->count(2)->create();
         // Attach special permissions to user
-        $specialAbilities->each(function($item) use ($user) {
+        $specialAbilities->each(function ($item) use ($user) {
             $user->allow($item->name);
         });
 
         $originalSpecialPermissionsArrayCount = $specialAbilities->count();
         $specialPermissionsArray = $specialAbilities->pluck('id')->toArray();
-        // Remove a special permission 
+        // Remove a special permission
         unset($specialPermissionsArray[count($specialPermissionsArray) - 1]);
 
         $res = $this->actingAs($user)->put(route('user-permissions.update', $user->id), [
@@ -187,13 +185,13 @@ class UserPermissionTest extends TestCase
         $res->assertJsonCount($originalSpecialPermissionsArrayCount - 1, 'special_permissions'); // new count
     }
 
-    public function test_updating_user_permissions_without_roles_returns_error(): void 
+    public function test_updating_user_permissions_without_roles_returns_error(): void
     {
         $user = User::factory()->create();
 
         $res = $this->actingAs($user)->put(route('user-permissions.update', $user->id), [
             'roles' => [],
-            'special_permissions' => [], 
+            'special_permissions' => [],
         ]);
 
         $res->assertStatus(302);
@@ -211,11 +209,10 @@ class UserPermissionTest extends TestCase
 
         $res->assertStatus(302);
         $res->assertInvalid([
-            'roles.0', 
-            'roles.1', 
+            'roles.0',
+            'roles.1',
             'special_permissions.0',
-            'special_permissions.1'
+            'special_permissions.1',
         ]);
     }
-
 }

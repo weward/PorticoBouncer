@@ -4,11 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UserPermissionRequest;
-use App\Models\Permission;
-use Illuminate\Http\Request;
 use App\Models\User;
-use Inertia\Inertia;
 use Bouncer;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class UserPermissionController extends Controller
 {
@@ -30,10 +29,10 @@ class UserPermissionController extends Controller
     public function update(UserPermissionRequest $request, User $user)
     {
         $user->load(['specialPermissions']);
-        $specialPermissions = $user->specialPermissions; 
+        $specialPermissions = $user->specialPermissions;
         // Update user roles
         Bouncer::sync($user)->roles($request->roles);
-        
+
         // Delete removed special permission
         $this->removeSpecialPermission($specialPermissions, $request->special_permissions, $user);
         // Insert new special permission
@@ -45,7 +44,7 @@ class UserPermissionController extends Controller
         return response()->jsonApi($user);
     }
 
-    public function removeSpecialPermission($specialPermissions, $payload = [], $user): void
+    public function removeSpecialPermission($specialPermissions, $payload, $user): void
     {
         $toRemove = $specialPermissions->whereNotIn('ability_id', $payload);
         $toRemove = $toRemove->pluck('ability_id');
@@ -53,10 +52,10 @@ class UserPermissionController extends Controller
         $user->specialPermissions()->whereIn('ability_id', $toRemove->toArray())->delete();
     }
 
-    public function insertSpecialPermission($specialPermissions, $payload = [], $user): void
+    public function insertSpecialPermission($specialPermissions, $payload, $user): void
     {
         $existing = $specialPermissions->whereIn('ability_id', $payload);
-        $existing =$existing->pluck('ability_id');
+        $existing = $existing->pluck('ability_id');
         $new = collect($payload)->filter(function ($item) use ($existing) {
             return $existing->doesntContain($item);
         });
@@ -64,10 +63,9 @@ class UserPermissionController extends Controller
         $toSave = $new->map(fn ($item, $key) => [
             'ability_id' => $item,
             'entity_id' => $user->id,
-            'entity_type' => User::class
+            'entity_type' => User::class,
         ]);
 
         $user->specialPermissions()->insert($toSave->toArray());
     }
-
 }

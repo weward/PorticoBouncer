@@ -82,7 +82,7 @@ class InstallCommand extends Command
         if ($this->shouldPublishMiddlewares) {
             $this->comment('Publishing middlewares...');
 
-            $this->callSilently("vendor:publish", [
+            $this->callSilently('vendor:publish', [
                 '--tag' => "{$this->package->shortName()}-middlewares",
             ]);
         }
@@ -90,7 +90,7 @@ class InstallCommand extends Command
         if ($this->shouldPublishControllers) {
             $this->comment('Publishing controllers...');
 
-            $this->callSilently("vendor:publish", [
+            $this->callSilently('vendor:publish', [
                 '--tag' => "{$this->package->shortName()}-controllers",
             ]);
         }
@@ -98,7 +98,7 @@ class InstallCommand extends Command
         if ($this->shouldPublishRequests) {
             $this->comment('Publishing requests...');
 
-            $this->callSilently("vendor:publish", [
+            $this->callSilently('vendor:publish', [
                 '--tag' => "{$this->package->shortName()}-requests",
             ]);
         }
@@ -106,7 +106,7 @@ class InstallCommand extends Command
         if ($this->shouldPublishServices) {
             $this->comment('Publishing services...');
 
-            $this->callSilently("vendor:publish", [
+            $this->callSilently('vendor:publish', [
                 '--tag' => "{$this->package->shortName()}-services",
             ]);
         }
@@ -114,7 +114,7 @@ class InstallCommand extends Command
         if ($this->shouldPublishTests) {
             $this->comment('Publishing tests...');
 
-            $this->callSilently("vendor:publish", [
+            $this->callSilently('vendor:publish', [
                 '--tag' => "{$this->package->shortName()}-tests",
             ]);
         }
@@ -122,7 +122,7 @@ class InstallCommand extends Command
         if ($this->shouldPublishPackageRoutes) {
             $this->comment('Publishing package routes...');
 
-            $this->callSilently("vendor:publish", [
+            $this->callSilently('vendor:publish', [
                 '--tag' => "{$this->package->shortName()}-package-routes",
             ]);
         }
@@ -269,7 +269,7 @@ class InstallCommand extends Command
         return $this;
     }
 
-    public function askIfShouldInstallEverythingAutomatically(): self 
+    public function askIfShouldInstallEverythingAutomatically(): self
     {
         $this->shouldInstallEverything = true;
 

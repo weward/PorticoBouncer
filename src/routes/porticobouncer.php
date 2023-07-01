@@ -1,15 +1,16 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Models\Admin\Role;
-use App\Models\Admin\Ability;
-use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\AbilityController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserPermissionController;
+use App\Models\Admin\Ability;
+use App\Models\Admin\Role;
+use Illuminate\Support\Facades\Route;
 
 Route::bind('role', function ($entityId) {
     $role = Role::findOrFail($entityId);
     info($role);
+
     return $role;
 });
 Route::bind('ability', function ($entityId) {

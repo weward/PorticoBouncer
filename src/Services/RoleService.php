@@ -1,14 +1,14 @@
-<?php 
+<?php
 
 namespace App\Services\Admin;
 
+use App\Models\Admin\Ability;
+use App\Models\Admin\Role;
+use Bouncer;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use App\Models\Admin\Role;
-use App\Models\Admin\Ability;
-use Bouncer;
 
-class RoleService 
+class RoleService
 {
     public function filter($params)
     {
@@ -18,7 +18,7 @@ class RoleService
             $query->where('name', $params->name);
             $query->orWhere('title', $params->name);
         });
-        
+
         return $q->paginate();
     }
 
@@ -33,7 +33,7 @@ class RoleService
             // $req->abilities = ids of marked abilities
             Bouncer::sync($role->name)->abilities($req->abilities);
 
-            DB::commit(); 
+            DB::commit();
             // attach abilities to response
             $role->load('abilities');
 
@@ -46,7 +46,7 @@ class RoleService
 
         return false;
     }
-    
+
     public function update($req, $entity)
     {
         DB::beginTransaction();
@@ -75,7 +75,7 @@ class RoleService
     {
         try {
             Role::where('id', $id)
-            ->delete();
+                ->delete();
 
             return true;
         } catch (\Throwable $th) {
@@ -87,11 +87,10 @@ class RoleService
 
     /**
      * Append formatted properties to object
-     * 
-     * @param Object    $role 
-     * @param Array     $fields property to append
-     * 
-     * @return Object
+     *
+     * @param  object  $role
+     * @param  array  $fields property to append
+     * @return object
      */
     public function append($role, $fields = [])
     {
@@ -108,11 +107,11 @@ class RoleService
 
     /**
      * Check if Create Button should be enabled
-     * Serve as a toggle for 
+     * Serve as a toggle for
      *  "There are no existing abilities. Please create at least one."
      *  indicator
-     * 
-     * @return Object
+     *
+     * @return object
      */
     public function hasExistingAbility()
     {
@@ -122,7 +121,7 @@ class RoleService
     /**
      * Toggle all abilities that matches each abilities of a role
      * appends "marked" property into the object (collection)
-     * 
+     *
      * @param Illuminate/Database/Eloquent/Collection   $roleAbilities  Abiltiies of a role
      * @param Illuminate/Database/Eloquent/Collection   $abilities      All abilities
      * @return Illuminate/Database/Eloquent/Collection|Array    Marked Abilities grouped by key
@@ -131,12 +130,10 @@ class RoleService
     {
         $abilities = Ability::all();
 
-        $abilities->each(function(&$ability, $key) use ($entityAbilities) {
+        $abilities->each(function (&$ability, $key) use ($entityAbilities) {
             $ability->marked = $entityAbilities->contains('id', $ability->id);
         });
 
         return $returnArray ? groupByKey($abilities) : $returnArray;
     }
-
-
 }
