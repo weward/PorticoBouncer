@@ -31,6 +31,8 @@ class Package
 
     public bool $hasPackageRoutes = false;
 
+    public bool $hasModels = false;
+
     public bool $runsMigrations = false;
 
     public array $migrationFileNames = [];
@@ -191,6 +193,13 @@ class Package
     public function hasPackageRoutes(): static
     {
         $this->hasPackageRoutes = true;
+
+        return $this;
+    }
+
+    public function hasModels(): static
+    {
+        $this->hasModels = true;
 
         return $this;
     }

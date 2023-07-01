@@ -1,22 +1,19 @@
-<?php
+<?php 
 
 namespace App\Services\Admin;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
-use Silber\Bouncer\Database\Ability;
+use App\Models\Admin\Ability;
 
-class AbilityService
+class AbilityService 
 {
-    protected $table = 'abilities';
-
-    public function filter($params = [])
+    public function filter($params)
     {
-        $q = DB::table($this->table);
+        $q = Ability::query();
 
-        $q->when($params['name'] ?? false, function ($query) use ($params) {
-            $query->where('name', $params['name']);
-            $query->orWhere('title', $params['name']);
+        $q->when($params->name ?? false, function ($query) use ($params) {
+            $query->where('name', $params->name);
+            $query->orWhere('title', $params->name);
         });
 
         return $q->paginate();
@@ -40,6 +37,7 @@ class AbilityService
         return false;
     }
 
+
     public function update($req, $entity)
     {
         try {
@@ -58,9 +56,7 @@ class AbilityService
     public function destroy($id)
     {
         try {
-            DB::table($this->table)
-                ->where('id', $id)
-                ->delete();
+            Ability::where('id', $id)->delete();
 
             return true;
         } catch (\Throwable $th) {
@@ -82,4 +78,18 @@ class AbilityService
 
         return $role;
     }
+
+    /**
+     * Returns grouped abilities based on prefix (Ability's title)
+     * ie, 
+     *  users => [users.create, users.edit], 
+     *  reports => [reports.create, reports.download]
+     */
+    public function getAll($grouped = false)
+    {
+        $abilities = Ability::all();
+
+        return $grouped ? groupByKey($abilities) : $abilities;
+    }
+
 }

@@ -1,54 +1,70 @@
-<?php
+<?php 
 
 namespace App\Services\Admin;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Silber\Bouncer\Database\Role;
+use App\Models\Admin\Role;
+use App\Models\Admin\Ability;
+use Bouncer;
 
-class RoleService
+class RoleService 
 {
-    protected $table = 'roles';
-
-    public function filter($params = [])
+    public function filter($params)
     {
-        $q = DB::table($this->table);
+        $q = Role::with(['abilities']);
 
-        $q->when($params['name'] ?? false, function ($query) use ($params) {
-            $query->where('name', $params['name']);
-            $query->orWhere('title', $params['name']);
+        $q->when($params->name ?? false, function ($query) use ($params) {
+            $query->where('name', $params->name);
+            $query->orWhere('title', $params->name);
         });
-
+        
         return $q->paginate();
     }
 
     public function store($req)
     {
+        DB::beginTransaction();
         try {
-            $q = Role::create([
-                'name' => $req->name,
+            $role = Bouncer::role()->firstOrCreate([
                 'title' => $req->title,
+                'name' => $req->name,
             ]);
+            // $req->abilities = ids of marked abilities
+            Bouncer::sync($role->name)->abilities($req->abilities);
 
-            info($q);
+            DB::commit(); 
+            // attach abilities to response
+            $role->load('abilities');
 
-            return $q;
+            return $role;
+
         } catch (\Throwable $th) {
+            DB::rollBack();
             info($th->getMessage());
         }
 
         return false;
     }
-
+    
     public function update($req, $entity)
     {
+        DB::beginTransaction();
         try {
             $entity->name = $req->name;
             $entity->title = $req->title;
             $entity->save();
+            // $req->abilities = ids of marked abilities
+            Bouncer::sync($entity->name)->abilities($req->abilities);
+
+            DB::commit();
+
+            $entity->load('abilities');
 
             return $entity;
+
         } catch (\Throwable $th) {
+            DB::rollBack();
             info($th->getMessage());
         }
 
@@ -58,9 +74,8 @@ class RoleService
     public function destroy($id)
     {
         try {
-            DB::table($this->table)
-                ->where('id', $id)
-                ->delete();
+            Role::where('id', $id)
+            ->delete();
 
             return true;
         } catch (\Throwable $th) {
@@ -70,6 +85,14 @@ class RoleService
         return false;
     }
 
+    /**
+     * Append formatted properties to object
+     * 
+     * @param Object    $role 
+     * @param Array     $fields property to append
+     * 
+     * @return Object
+     */
     public function append($role, $fields = [])
     {
         if (in_array('created_at_formatted', $fields)) {
@@ -82,4 +105,38 @@ class RoleService
 
         return $role;
     }
+
+    /**
+     * Check if Create Button should be enabled
+     * Serve as a toggle for 
+     *  "There are no existing abilities. Please create at least one."
+     *  indicator
+     * 
+     * @return Object
+     */
+    public function hasExistingAbility()
+    {
+        return Ability::select('id')->first();
+    }
+
+    /**
+     * Toggle all abilities that matches each abilities of a role
+     * appends "marked" property into the object (collection)
+     * 
+     * @param Illuminate/Database/Eloquent/Collection   $roleAbilities  Abiltiies of a role
+     * @param Illuminate/Database/Eloquent/Collection   $abilities      All abilities
+     * @return Illuminate/Database/Eloquent/Collection|Array    Marked Abilities grouped by key
+     */
+    public function markAbilities($entityAbilities, $returnArray = true)
+    {
+        $abilities = Ability::all();
+
+        $abilities->each(function(&$ability, $key) use ($entityAbilities) {
+            $ability->marked = $entityAbilities->contains('id', $ability->id);
+        });
+
+        return $returnArray ? groupByKey($abilities) : $returnArray;
+    }
+
+
 }

@@ -30,6 +30,8 @@ class InstallCommand extends Command
 
     protected bool $shouldPublishPackageRoutes = false;
 
+    protected bool $shouldPublishModels = false;
+
     protected bool $shouldPublishMigrations = false;
 
     protected bool $askToRunMigrations = false;
@@ -37,6 +39,8 @@ class InstallCommand extends Command
     protected bool $copyServiceProviderInApp = false;
 
     protected ?string $starRepo = null;
+
+    protected ?string $shouldInstallEverything = null;
 
     public ?Closure $endWith = null;
 
@@ -161,6 +165,12 @@ class InstallCommand extends Command
             }
         }
 
+        if ($this->shouldInstallEverything) {
+            if ($this->confirm('Would you like to auto-install everything? (Select NO to publish each feature one by one)')) {
+                return;
+            }
+        }
+
         $this->info("{$this->package->shortName()} has been installed!");
 
         if ($this->endWith) {
@@ -224,6 +234,13 @@ class InstallCommand extends Command
         return $this;
     }
 
+    public function publishModels(): self
+    {
+        $this->shouldPublishModels = true;
+
+        return $this;
+    }
+
     public function publishMigrations(): self
     {
         $this->shouldPublishMigrations = true;
@@ -248,6 +265,13 @@ class InstallCommand extends Command
     public function askToStarRepoOnGitHub($vendorSlashRepoName): self
     {
         $this->starRepo = $vendorSlashRepoName;
+
+        return $this;
+    }
+
+    public function askIfShouldInstallEverythingAutomatically(): self 
+    {
+        $this->shouldInstallEverything = true;
 
         return $this;
     }

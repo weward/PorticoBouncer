@@ -139,6 +139,15 @@ abstract class PackageServiceProvider extends ServiceProvider
                 $this->registerPackageRoutes();
             }
 
+            if ($this->package->hasModels) {
+                $this->publishes([
+                    $this->package->basePath('Models') => app_path('Models/Admin'),
+                ], "{$this->package->shortName()}-models");
+
+                // Register custom models in App/Providers/AppServiceProvider
+                $this->registerCustomModelsInAppServiceProvider();
+            }
+
         }
 
         if (! empty($this->package->commands)) {
@@ -228,6 +237,22 @@ abstract class PackageServiceProvider extends ServiceProvider
         // Append if not yet registered
         if (!str_contains($content, $searchFor)) {
             $newContent = str_replace($target, $target . "\n\t\t\t\t" . $append, $content);
+            file_put_contents($filePathToEdit, $newContent);
+        }
+    }
+
+    public function registerCustomModelsInAppServiceProvider()
+    {
+        $filePathToEdit = app_path('Providers/AppServiceProvider.php');
+        $target = "public function booth(): void\n{";
+        $append = "// Override Silber/Bouncer\nBouncer::useAbilityModel(\App\Models\Admin\Ability::class);\nBouncer::useRoleModel(\App\Models\Admin\Role::class);\n\n";
+
+        $content = file_get_contents($filePathToEdit);
+
+        $searchFor = "Override Silber/Bouncer";
+
+        if (!str_contains($content, $searchFor)) {
+            $newContent = str_replace($target, $target . "\n\t\t" . $append, $content);
             file_put_contents($filePathToEdit, $newContent);
         }
     }

@@ -3,11 +3,13 @@
 namespace Tests\Feature\Feature\Admin;
 
 use App\Models\User;
-use Bouncer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Inertia\Testing\AssertableInertia as Assert;
-use Silber\Bouncer\Database\Role;
+use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Bouncer;
+use App\Models\Admin\Role;
+use App\Models\Admin\Ability;
+use Inertia\Testing\AssertableInertia as Assert;
 
 class RoleTest extends TestCase
 {
@@ -30,11 +32,11 @@ class RoleTest extends TestCase
         $user = User::factory()->withCompany()->create();
         Bouncer::assign('admin')->to($user);
         Bouncer::assign('moderator')->to($user);
-
+        
         $res = $this->actingAs($user)->get(route('roles.index'));
 
         $res->assertInertia(function (Assert $page) use ($count) {
-            $page->has('roles.data', $count);
+            $page->has('roles.data', $count); 
         });
     }
 
@@ -47,67 +49,98 @@ class RoleTest extends TestCase
         $res->assertStatus(200);
     }
 
-    public function test_can_create_new_role()
+    public function test_can_render_create_page_with_abilities()
+    {
+        $user = User::factory()->create();
+
+        Bouncer::allow('admin')->to('users.create');
+
+        $res = $this->actingAs($user)->get(route('roles.create'));
+
+
+        $res->assertInertia(fn(Assert $page) => $page->has('abilities', 1));
+    }
+
+    public function test_can_store_a_new_role()
     {
         $user = User::factory()->withCompany()->create();
 
         $name = 'admin';
         $title = 'Admin';
 
-        $res = $this->actingAs($user)
-            ->post(
-                route('roles.store'),
-                [
-                    'name' => $name,
-                    'title' => $title,
-                ]
-            );
+        Ability::insert([
+            [
+                'id' => 1,
+                'name' => 'users.edit',
+                'title' => 'Edit Users',
+            ],
+            [
+                'id' => 2,
+                'name' => 'users.delete',
+                'title' => 'Delete Users',
+            ],
+        ]);
 
-        $res->assertJsonPath('name', 'admin');
-        $res->assertJsonPath('title', 'Admin');
+        $res = $this->actingAs($user)
+        ->post(
+            route('roles.store'), 
+            [
+                'name' => $name,
+                'title' => $title,
+                'abilities' => [1, 2]
+            ]
+        );
+        
+        $res->assertJsonPath('name', $name);
+        $res->assertJsonPath('title', $title);
+        $res->assertJsonCount(2, 'abilities');
     }
 
-    public function test_can_render_show_page()
+    public function test_can_render_show_page_with_abilities()
     {
         $user = User::factory()->create();
         $name = 'admin';
         $title = 'Admin';
 
-        Role::create([
-            'id' => 1,
+        $role = Role::create([
             'name' => $name,
             'title' => $title,
         ]);
 
+        Bouncer::allow($name)->to('users.create');
+
         $res = $this->actingAs($user)
-            ->get(route('roles.show', 1));
+            ->get(route('roles.show', $role->id));
 
         $res->assertInertia(function (Assert $page) use ($name, $title) {
             $page->where('role.name', $name);
             $page->where('role.title', $title);
             $page->has('role.created_at_formatted');
+            $page->has('role.abilities'); // with abilities
         });
     }
 
-    public function test_can_render_edit_page()
+    public function test_can_render_edit_page_with_marked_abilities()
     {
         $user = User::factory()->create();
         $name = 'admin';
         $title = 'Admin';
 
-        Role::create([
-            'id' => 1,
+        $role = Role::create([
             'name' => $name,
             'title' => $title,
         ]);
 
+        Bouncer::allow($name)->to('users.create');
+
         $res = $this->actingAs($user)
-            ->get(route('roles.edit', 1));
+            ->get(route('roles.edit', $role->id));
 
         $res->assertInertia(function (Assert $page) use ($name, $title) {
             $page->where('role.name', $name);
             $page->where('role.title', $title);
             $page->missing('role.created_at_formatted');
+            $page->has('abilities'); // marked abilities
         });
     }
 
@@ -118,20 +151,37 @@ class RoleTest extends TestCase
         $title = 'Admin';
         $updatedName = 'superadmin';
 
-        Role::create([
-            'id' => 1,
+        $role = Role::create([
             'name' => $name,
             'title' => $title,
         ]);
+        // Attache ability into role
+        Bouncer::allow($name)->to('old.ability');
 
         $res = $this->actingAs($user)
-            ->put(route('roles.update', 1), [
+            ->get(route('roles.show', $role->id));
+
+        $res->assertInertia(function (Assert $page) use ($name, $title) {
+            $page->has('role.abilities', 1); // with one ability (old.ability)
+        });
+
+        // Attach new ability
+        Ability::create([
+            'title' => 'users.create',
+            'name' => 'Create Users',
+        ]);
+
+        $res = $this->actingAs($user)
+            ->put(route('roles.update', $role->id), [
                 'name' => $updatedName,
                 'title' => $title,
+                'abilities' => [1, 2]
             ]);
 
         $res->assertJsonPath('name', $updatedName);
         $res->assertJsonPath('title', $title);
+        $res->assertJsonCount(2, 'abilities');
+
     }
 
     public function test_can_delete_a_role()
@@ -147,4 +197,6 @@ class RoleTest extends TestCase
 
         $res->assertStatus(200);
     }
+
+
 }

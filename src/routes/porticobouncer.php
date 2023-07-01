@@ -1,13 +1,16 @@
 <?php
 
-use App\Http\Controllers\Admin\AbilityController;
-use App\Http\Controllers\Admin\RoleController;
 use Illuminate\Support\Facades\Route;
-use Silber\Bouncer\Database\Ability;
-use Silber\Bouncer\Database\Role;
+use App\Models\Admin\Role;
+use App\Models\Admin\Ability;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\AbilityController;
+use App\Http\Controllers\Admin\UserPermissionController;
 
 Route::bind('role', function ($entityId) {
-    return Role::findOrFail($entityId);
+    $role = Role::findOrFail($entityId);
+    info($role);
+    return $role;
 });
 Route::bind('ability', function ($entityId) {
     return Ability::findOrFail($entityId);
@@ -31,4 +34,9 @@ Route::prefix('abilities')->group(function () {
     Route::get('{ability}/edit', [AbilityController::class, 'edit'])->name('abilities.edit');
     Route::put('{ability}', [AbilityController::class, 'update'])->name('abilities.update');
     Route::delete('{ability}', [AbilityController::class, 'destroy'])->name('abilities.destroy');
+});
+
+Route::prefix('user-permissions')->group(function () {
+    Route::get('{user}/edit-user-permission', [UserPermissionController::class, 'edit'])->name('user-permissions.edit');
+    Route::put('{user}/update-user-permission', [UserPermissionController::class, 'update'])->name('user-permissions.update');
 });

@@ -47,6 +47,13 @@ This also serves as a template
 
 - `php artisan porticobouncer:install`
 
+- Register the custom models in `AppServiceProvider.php`
+
+```
+    Bouncer::useAbilityModel(\App\Models\Admin\Ability::class);
+    Bouncer::useRoleModel(\App\Models\Admin\Role::class);
+```
+
 - Run tests
     - `php artisan test --filter=ability`
     - `php artisan test --filter=role`

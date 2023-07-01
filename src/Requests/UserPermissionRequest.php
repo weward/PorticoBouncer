@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RoleRequest extends FormRequest
+class UserPermissionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,20 +21,11 @@ class RoleRequest extends FormRequest
      */
     public function rules(): array
     {
-        $title = (request()->isMethod('PUT')) ? 'required|string' : 'required|string|unique:roles,title';
-
         return [
-            'title' => $title,
-            'name' => 'required|string',
-            'abilities' => 'required|array',
-            'abilities.*' => 'required|integer',
-        ];
-    }
-
-    public function messages(): array 
-    {
-        return [
-            'title.required' => 'Please provide a title',
+            'roles' => 'required|array',
+            'roles.*' => 'required|integer',
+            'special_permissions' => 'array',
+            'special_permissions.*' => 'integer',
         ];
     }
 }
