@@ -37,6 +37,7 @@ class PorticoBouncerServiceProvider extends PackageServiceProvider
             ->hasPackageRoutes()
             ->hasModels()
             ->hasTraits()
+            ->hasFactories()
             ->hasInstallCommand(function(InstallCommand $command) {
                 $command
                     ->startWith(function (InstallCommand $command) {
@@ -52,6 +53,7 @@ class PorticoBouncerServiceProvider extends PackageServiceProvider
                     ->publishPackageRoutes()
                     ->publishModels()
                     ->publishTraits()
+                    ->publishFactories()
                     ->endWith(function (InstallCommand $command) {
                         $command->info("Done installing package {$this->packageName}");
                     });

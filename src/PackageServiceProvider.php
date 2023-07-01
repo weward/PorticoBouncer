@@ -157,6 +157,12 @@ abstract class PackageServiceProvider extends ServiceProvider
                 $this->insertTraitInUserModel();
             }
 
+            if ($this->package->hasFactories) {
+                $this->publishes([
+                    $this->package->basePath('Factories') => base_path('database/factories/Admin'),
+                ], "{$this->package->shortName()}-factories");
+            }
+
         }
 
         if (! empty($this->package->commands)) {

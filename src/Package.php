@@ -35,6 +35,8 @@ class Package
 
     public bool $hasTraits = false;
 
+    public bool $hasFactories = false;
+
     public bool $runsMigrations = false;
 
     public array $migrationFileNames = [];
@@ -209,6 +211,13 @@ class Package
     public function hasTraits(): static
     {
         $this->hasTraits = true;
+
+        return $this;
+    }
+
+    public function hasFactories(): static
+    {
+        $this->hasFactories = true;
 
         return $this;
     }
