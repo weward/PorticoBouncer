@@ -276,9 +276,9 @@ abstract class PackageServiceProvider extends ServiceProvider
     {
         $filePathToEdit = app_path('Models/User.php');
         $content = file_get_contents($filePathToEdit);
-        $searchFor = "porticobouncer";
+        $searchFor = 'porticobouncer';
 
-        if (!str_contains($content, $searchFor)) {
+        if (! str_contains($content, $searchFor)) {
             $pattern = '/^(.*\buse\b.*?;)(?!.*\buse\b.*?;)/s';
             $append = "$1 \n\tuse \App\Traits\HasPorticoBouncerPermissions; // porticobouncer";
             // $target = "class User extends Authenticable\n{\nuse apples;\nuse banana;\nuse cat;";
