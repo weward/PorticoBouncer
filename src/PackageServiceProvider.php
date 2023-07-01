@@ -148,6 +148,15 @@ abstract class PackageServiceProvider extends ServiceProvider
                 $this->registerCustomModelsInAppServiceProvider();
             }
 
+            if ($this->package->hasTraits) {
+                $this->publishes([
+                    $this->package->basePath('Traits') => app_path('Traits'),
+                ], "{$this->package->shortName()}-traits");
+
+                // Include trait in App/Models/User
+                $this->insertTraitInUserModel();
+            }
+
         }
 
         if (! empty($this->package->commands)) {
@@ -255,6 +264,24 @@ abstract class PackageServiceProvider extends ServiceProvider
             $newContent = str_replace($target, $target . "\n\t\t" . $append, $content);
             file_put_contents($filePathToEdit, $newContent);
         }
+    }
+
+    public function insertTraitInUserModel()
+    {
+        $filePathToEdit = app_path('Models/User.php');
+        $content = file_get_contents($filePathToEdit);
+        $searchFor = "porticobouncer";
+
+        if (!str_contains($content, $searchFor)) {
+            $pattern = '/^(.*\buse\b.*?;)(?!.*\buse\b.*?;)/s';
+            $append = "$1 \n\tuse \App\Traits\HasPorticoBouncerPermissions; // porticobouncer";
+            // $target = "class User extends Authenticable\n{\nuse apples;\nuse banana;\nuse cat;";
+
+            $newContent = preg_replace($pattern, $append, $content);
+
+            file_put_contents($filePathToEdit, $newContent);
+        }
+
     }
 
     public function registeringPackage()

@@ -32,6 +32,8 @@ class InstallCommand extends Command
 
     protected bool $shouldPublishModels = false;
 
+    protected bool $shouldPublishTraits = false;
+
     protected bool $shouldPublishMigrations = false;
 
     protected bool $askToRunMigrations = false;
@@ -237,6 +239,13 @@ class InstallCommand extends Command
     public function publishModels(): self
     {
         $this->shouldPublishModels = true;
+
+        return $this;
+    }
+
+    public function publishTraits(): self
+    {
+        $this->shouldPublishTraits = true;
 
         return $this;
     }

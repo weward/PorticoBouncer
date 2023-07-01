@@ -36,12 +36,13 @@ class PorticoBouncerServiceProvider extends PackageServiceProvider
             ->hasTests()
             ->hasPackageRoutes()
             ->hasModels()
+            ->hasTraits()
             ->hasInstallCommand(function(InstallCommand $command) {
                 $command
                     ->startWith(function (InstallCommand $command) {
                         $command->info("Installing package {$this->packageName}");
                         $command->askIfShouldInstallEverythingAutomatically();
-                        $command->info("Still continued!");
+                        $command->info("Oops! it continued");
                     })
                     // ->publishMiddlewares()
                     ->publishControllers()
@@ -50,6 +51,7 @@ class PorticoBouncerServiceProvider extends PackageServiceProvider
                     ->publishTests()
                     ->publishPackageRoutes()
                     ->publishModels()
+                    ->publishTraits()
                     ->endWith(function (InstallCommand $command) {
                         $command->info("Done installing package {$this->packageName}");
                     });

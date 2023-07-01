@@ -47,6 +47,8 @@ This also serves as a template
 
 - `php artisan porticobouncer:install`
 
+- Add the `HasPorticoBouncerPermissions` trait in the `User.php` model
+
 - Register the custom models in `AppServiceProvider.php`
 
 ```

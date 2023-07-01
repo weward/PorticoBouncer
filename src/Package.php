@@ -33,6 +33,8 @@ class Package
 
     public bool $hasModels = false;
 
+    public bool $hasTraits = false;
+
     public bool $runsMigrations = false;
 
     public array $migrationFileNames = [];
@@ -200,6 +202,13 @@ class Package
     public function hasModels(): static
     {
         $this->hasModels = true;
+
+        return $this;
+    }
+
+    public function hasTraits(): static
+    {
+        $this->hasTraits = true;
 
         return $this;
     }
