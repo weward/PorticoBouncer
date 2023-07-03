@@ -369,8 +369,8 @@ class InstallCommand extends Command
         // Check if already existing
         $searchFor = 'routes/porticobouncer.php';
         // Append if not yet registered
-        if (!str_contains($content, $searchFor)) {
-            $newContent = str_replace($target, $target . "\n\t\t\t\t" . $append, $content);
+        if (! str_contains($content, $searchFor)) {
+            $newContent = str_replace($target, $target."\n\t\t\t\t".$append, $content);
             file_put_contents($filePathToEdit, $newContent);
         }
     }
@@ -378,15 +378,15 @@ class InstallCommand extends Command
     public function registerCustomModelsInAppServiceProvider()
     {
         $filePathToEdit = app_path('Providers/AppServiceProvider.php');
-        $target = "porticobouncer";
+        $target = 'porticobouncer';
         $append = "// Override Silber/Bouncer\n\t\tBouncer::useAbilityModel(\App\Models\Admin\Ability::class);\n\t\tBouncer::useRoleModel(\App\Models\Admin\Role::class);\n\n";
 
         $content = file_get_contents($filePathToEdit);
 
         $searchFor = 'Override Silber/Bouncer';
 
-        if (!str_contains($content, $searchFor)) {
-            $newContent = str_replace($target, $target . "\n\t\t" . $append, $content);
+        if (! str_contains($content, $searchFor)) {
+            $newContent = str_replace($target, $target."\n\t\t".$append, $content);
             file_put_contents($filePathToEdit, $newContent);
         }
     }
@@ -395,9 +395,9 @@ class InstallCommand extends Command
     {
         $filePathToEdit = app_path('Models/User.php');
         $content = file_get_contents($filePathToEdit);
-        $searchFor = "porticobouncer";
+        $searchFor = 'porticobouncer';
 
-        if (!str_contains($content, $searchFor)) {
+        if (! str_contains($content, $searchFor)) {
             $pattern = '/^(.*\buse\b.*?;)(?!.*\buse\b.*?;)/s';
             $append = "$1 \n\tuse \App\Traits\HasPorticoBouncerPermissions; // porticobouncer";
             // $target = "class User extends Authenticable\n{\nuse apples;\nuse banana;\nuse cat;";
