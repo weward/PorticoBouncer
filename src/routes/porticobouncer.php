@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::bind('role', function ($entityId) {
     $role = Role::findOrFail($entityId);
+
     return $role;
 });
 
