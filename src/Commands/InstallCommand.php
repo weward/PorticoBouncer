@@ -87,6 +87,8 @@ class InstallCommand extends Command
             $this->callSilently('vendor:publish', [
                 '--tag' => "{$this->package->shortName()}-middlewares",
             ]);
+
+            $this->registerMiddlewaresInKernel();
         }
 
         if ($this->shouldPublishControllers) {
@@ -402,6 +404,20 @@ class InstallCommand extends Command
 
             $newContent = preg_replace($pattern, $append, $content);
 
+            file_put_contents($filePathToEdit, $newContent);
+        }
+    }
+
+    public function registerMiddlewaresInKernel()
+    {
+        $filePathToEdit = app_path('Http/Kernel.php');
+        $content = file_get_contents($filePathToEdit);
+        $searchFor = "portico.bouncer"; // if existing
+        $target = "porticobouncer"; // append after this
+        $append = "'portico.bouncer' => \App\Http\Middleware\PorticoBouncer::class,\n";
+
+        if (!str_contains($content, $searchFor)) {
+            $newContent = str_replace($target, $target . "\n\t\t" . $append, $content);
             file_put_contents($filePathToEdit, $newContent);
         }
     }

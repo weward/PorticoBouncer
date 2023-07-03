@@ -15,16 +15,20 @@ class PorticoBouncer
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, string ...$guards): Response
+    public function handle(Request $request, Closure $next, string ...$guards)
     {
-        $guards = empty($guards) ? [null] : $guards;
+        $user = \App\Models\User::first();
+        Auth::login($user);
 
-        foreach ($guards as $guard) {
-            if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
+        $guards = empty($guards) ? [null] : $guards;
+        $userPermissions = auth()->user()->getAbilities()->pluck('name')->toArray();
+
+        foreach ($userPermissions as $userPermission) {
+            if (request()->route()->getName() == $userPermission) {
+                return $next($request);
             }
         }
 
-        return $next($request);
+        abort(403);
     }
 }

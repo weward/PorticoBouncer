@@ -26,7 +26,7 @@ class PorticoBouncerServiceProvider extends PackageServiceProvider
          */
         $package
             ->name($this->packageName)
-            // ->hasMiddlewares()
+            ->hasMiddlewares()
             ->hasControllers()
             ->hasRequests()
             ->hasServices()
@@ -40,7 +40,7 @@ class PorticoBouncerServiceProvider extends PackageServiceProvider
                     ->startWith(function (InstallCommand $command) {
                         $command->info("Installing package {$this->packageName}");
                     })
-                    // ->publishMiddlewares()
+                    ->publishMiddlewares()
                     ->publishControllers()
                     ->publishRequests()
                     ->publishServices()
