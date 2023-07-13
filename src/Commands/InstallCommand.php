@@ -168,6 +168,7 @@ class InstallCommand extends Command
 
             if ($this->confirm('Do you want to publish the Inertia-specific views?')) {
                 $this->copyInertiaViewsIntoApp();
+                $this->registerNavMenuLink('role');
             }
         }
 
@@ -448,7 +449,6 @@ class InstallCommand extends Command
         if (is_dir($sourceDir) && is_dir($targetDir)) {
             $this->recurseCopy($sourceDir, $targetDir, $childDir);
         }
-
     }
 
     public function recurseCopy($sourceDir, $targetDir, $childDir = '')
@@ -481,5 +481,32 @@ class InstallCommand extends Command
         }
 
         closedir($scanDir);
+    }
+
+    public function registerNavMenuLink($module = '')
+    {
+        switch ($module) {
+            case 'role': 
+                $this->registerRoleNavMenuLink();
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    public function registerRoleNavMenuLink()
+    {
+        // resources/js/Properties/navMenu.js
+        $filePathToEdit = base_path('resources/js/Properties/navMenu.js');
+        $content = file_get_contents($filePathToEdit);
+        $searchFor = 'roles.index'; // if existing
+        $target = 'porticobouncer'; // append after this
+        $append = "{\n\t\t\tlabel: 'User Roles',\n\t\t\troute: route('roles.index'),\n\t\t\ticon: 'mdi-account-star'\n\t\t},\n";
+
+        if (!str_contains($content, $searchFor)) {
+            $newContent = str_replace($target, $target . "\n\t\t" . $append, $content);
+            file_put_contents($filePathToEdit, $newContent);
+        }
     }
 }
