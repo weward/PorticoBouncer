@@ -294,7 +294,7 @@ class InstallCommand extends Command
         return $this;
     }
 
-    public function askIfShouldPublishInertiaViews(): self 
+    public function askIfShouldPublishInertiaViews(): self
     {
         $this->shouldPublishInertiaViews = true;
 
@@ -442,8 +442,8 @@ class InstallCommand extends Command
 
     public function copyInertiaViewsIntoApp()
     {
-        $sourceDir = $this->package->basePath("views/Inertia");
-        $targetDir = base_path("resources/js/Pages/Admin");
+        $sourceDir = $this->package->basePath('views/Inertia');
+        $targetDir = base_path('resources/js/Pages/Admin');
         $childDir = '';
 
         if (is_dir($sourceDir) && is_dir($targetDir)) {
@@ -486,7 +486,7 @@ class InstallCommand extends Command
     public function registerNavMenuLink($module = '')
     {
         switch ($module) {
-            case 'role': 
+            case 'role':
                 $this->registerRoleNavMenuLink();
                 break;
 
@@ -504,8 +504,8 @@ class InstallCommand extends Command
         $target = 'porticobouncer'; // append after this
         $append = "{\n\t\t\tlabel: 'User Roles',\n\t\t\troute: route('roles.index'),\n\t\t\ticon: 'mdi-account-star'\n\t\t},\n";
 
-        if (!str_contains($content, $searchFor)) {
-            $newContent = str_replace($target, $target . "\n\t\t" . $append, $content);
+        if (! str_contains($content, $searchFor)) {
+            $newContent = str_replace($target, $target."\n\t\t".$append, $content);
             file_put_contents($filePathToEdit, $newContent);
         }
     }
