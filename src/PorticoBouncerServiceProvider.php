@@ -35,6 +35,7 @@ class PorticoBouncerServiceProvider extends PackageServiceProvider
             ->hasModels()
             ->hasTraits()
             ->hasFactories()
+            ->hasInertiaViews()
             ->hasInstallCommand(function (InstallCommand $command, $packageInstance) {
                 $command
                     ->startWith(function (InstallCommand $command) {
@@ -49,6 +50,7 @@ class PorticoBouncerServiceProvider extends PackageServiceProvider
                     ->publishModels()
                     ->publishTraits()
                     ->publishFactories()
+                    ->askIfShouldPublishInertiaViews()
                     ->endWith(function (InstallCommand $command) {
                         $command->info("Done installing package {$this->packageName}");
                     });

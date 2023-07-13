@@ -36,6 +36,8 @@ class InstallCommand extends Command
 
     protected bool $shouldPublishFactories = false;
 
+    protected bool $shouldPublishInertiaViews = false;
+
     protected bool $shouldPublishMigrations = false;
 
     protected bool $askToRunMigrations = false;
@@ -161,6 +163,14 @@ class InstallCommand extends Command
             ]);
         }
 
+        if ($this->shouldPublishInertiaViews) {
+            $this->comment('Publishing Inertia-specific Views...');
+
+            if ($this->confirm('Do you want to publish the Inertia-specific views?')) {
+                $this->copyInertiaViewsIntoApp();
+            }
+        }
+
         if ($this->shouldPublishMigrations) {
             $this->comment('Publishing migration...');
 
@@ -279,6 +289,13 @@ class InstallCommand extends Command
     public function publishFactories(): self
     {
         $this->shouldPublishFactories = true;
+
+        return $this;
+    }
+
+    public function askIfShouldPublishInertiaViews(): self 
+    {
+        $this->shouldPublishInertiaViews = true;
 
         return $this;
     }
@@ -420,5 +437,49 @@ class InstallCommand extends Command
             $newContent = str_replace($target, $target."\n\t\t".$append, $content);
             file_put_contents($filePathToEdit, $newContent);
         }
+    }
+
+    public function copyInertiaViewsIntoApp()
+    {
+        $sourceDir = $this->package->basePath("views/Inertia");
+        $targetDir = base_path("resources/js/Pages/Admin");
+        $childDir = '';
+
+        if (is_dir($sourceDir) && is_dir($targetDir)) {
+            $this->recurseCopy($sourceDir, $targetDir, $childDir);
+        }
+
+    }
+
+    public function recurseCopy($sourceDir, $targetDir, $childDir = '')
+    {
+        $dirToScan = $childDir ? "{$sourceDir}/$childDir" : $sourceDir;
+        $dirToTarget = $childDir ? "{$targetDir}/$childDir" : $targetDir;
+
+        $scanDir = opendir($dirToScan);
+
+        while (($file = readdir($scanDir)) !== false) {
+            if ($file === '.' || $file === '..') {
+                continue;
+            }
+
+            // if content is still a dir
+            if (is_dir("{$dirToScan}/{$file}") === true) {
+
+                $targetDirLoc = "{$dirToTarget}/{$file}";
+                if (is_dir($targetDirLoc) === false) {
+                    mkdir($targetDirLoc);
+                }
+
+                $this->recurseCopy("$dirToScan", $dirToTarget, $file);
+
+                continue;
+            }
+
+            // If content is a file, copy
+            copy("{$dirToScan}/{$file}", "{$dirToTarget}/{$file}");
+        }
+
+        closedir($scanDir);
     }
 }

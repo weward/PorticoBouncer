@@ -37,6 +37,8 @@ class Package
 
     public bool $hasFactories = false;
 
+    public bool $hasInertiaViews = false;
+
     public bool $runsMigrations = false;
 
     public array $migrationFileNames = [];
@@ -218,6 +220,13 @@ class Package
     public function hasFactories(): static
     {
         $this->hasFactories = true;
+
+        return $this;
+    }
+
+    public function hasInertiaViews(): static 
+    {
+        $this->hasInertiaViews = true;
 
         return $this;
     }

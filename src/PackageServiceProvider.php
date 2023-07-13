@@ -154,6 +154,12 @@ abstract class PackageServiceProvider extends ServiceProvider
                 ], "{$this->package->shortName()}-factories");
             }
 
+            if ($this->package->hasInertiaViews) {
+                $this->publishes([
+                    $this->package->basePath('views/Inertia') => base_path('resources/js/Pages/Admin'),
+                ], "{$this->package->shortName()}-inertia-views");
+            }
+
         }
 
         if (! empty($this->package->commands)) {
