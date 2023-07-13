@@ -12,16 +12,14 @@ use Inertia\Inertia;
 
 class RoleController extends Controller
 {
-    public function __construct(protected RoleService $service, protected AbilityService $abilityService)
-    {
-    }
+    public function __construct(protected RoleService $service, protected AbilityService $abilityService) {}
 
     public function index(Request $request)
     {
         $role = $this->service->filter($request);
         $hasExistingAbility = $this->service->hasExistingAbility();
 
-        return Inertia::render('Admin/Roles', [
+        return Inertia::render('Admin/Roles/Index', [
             'roles' => $role,
             'hasExistingAbility' => $hasExistingAbility,
         ]);
@@ -29,7 +27,7 @@ class RoleController extends Controller
 
     public function create()
     {
-        $abilities = $this->abilityService->getAll();
+        $abilities = $this->abilityService->getAll(true);
 
         return Inertia::render('Admin/Roles/Create', [
             'abilities' => $abilities,
@@ -40,7 +38,12 @@ class RoleController extends Controller
     {
         $res = $this->service->store($request);
 
-        return response()->jsonApi($res);
+        if (!$res) {
+            return back()->with('errorMsg', "Oops! Something went wrong!");
+        }
+
+        return redirect(route('roles.show', $res->id))
+            ->with('successMsg', Role::CREATE_SUCCESS_MSG);
     }
 
     public function show(Request $request, Role $role)
@@ -51,6 +54,8 @@ class RoleController extends Controller
         ]);
 
         $role->load(['abilities']);
+
+        $role->roleAbilities = groupByKey($role->abilities);
 
         return Inertia::render('Admin/Roles/Show', [
             'role' => $role,
@@ -73,7 +78,8 @@ class RoleController extends Controller
     {
         $res = $this->service->update($request, $role);
 
-        return response()->jsonApi($res);
+        return redirect(route('roles.show', $role->id))
+            ->with('successMsg', Role::UPDATE_SUCCESS_MSG);
     }
 
     public function destroy(Role $role)

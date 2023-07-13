@@ -79,19 +79,26 @@ class RoleTest extends TestCase
             ],
         ]);
 
+        // Role table is empty
+        $roleCount = Role::count();
+        $this->assertEquals(0, $roleCount);
+
         $res = $this->actingAs($user)
             ->post(
                 route('roles.store'),
                 [
-                    'name' => $name,
                     'title' => $title,
                     'abilities' => [1, 2],
                 ]
             );
 
-        $res->assertJsonPath('name', $name);
-        $res->assertJsonPath('title', $title);
-        $res->assertJsonCount(2, 'abilities');
+        // Role table has exactly 1 record
+        $role = Role::get();
+        $this->assertEquals(1, $role->count());
+
+        $res->assertValid()
+            ->assertRedirectToRoute('roles.show', ['role' => $role->first()->id])
+            ->assertSessionHas('successMsg', Role::CREATE_SUCCESS_MSG);
     }
 
     public function test_can_render_show_page_with_abilities()
@@ -115,6 +122,7 @@ class RoleTest extends TestCase
             $page->where('role.title', $title);
             $page->has('role.created_at_formatted');
             $page->has('role.abilities'); // with abilities
+            $page->has('role.roleAbilities'); // with abilities
         });
     }
 
@@ -153,6 +161,10 @@ class RoleTest extends TestCase
             'name' => $name,
             'title' => $title,
         ]);
+
+        // Role table has only 1 record
+        $this->assertEquals(1, Role::count());
+
         // Attache ability into role
         Bouncer::allow($name)->to('old.ability');
 
@@ -171,15 +183,17 @@ class RoleTest extends TestCase
 
         $res = $this->actingAs($user)
             ->put(route('roles.update', $role->id), [
-                'name' => $updatedName,
-                'title' => $title,
+                'title' => $updatedName,
                 'abilities' => [1, 2],
             ]);
 
-        $res->assertJsonPath('name', $updatedName);
-        $res->assertJsonPath('title', $title);
-        $res->assertJsonCount(2, 'abilities');
+        // only 1 record
+        $updatedRole = Role::first();
+        $this->assertEquals($updatedName, $updatedRole->name);
 
+        $res->assertValid()
+            ->assertRedirectToRoute('roles.show', ['role' => $updatedRole->id])
+            ->assertSessionHas('successMsg', Role::UPDATE_SUCCESS_MSG);
     }
 
     public function test_can_delete_a_role()

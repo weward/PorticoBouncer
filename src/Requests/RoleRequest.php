@@ -25,16 +25,16 @@ class RoleRequest extends FormRequest
 
         return [
             'title' => $title,
-            'name' => 'required|string',
             'abilities' => 'required|array',
-            'abilities.*' => 'required|integer',
+            // 'abilities.*' => 'integer',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'title.required' => 'Please provide a title',
+            'title.required' => 'Please provide a name for the role',
+            'abilities.required' => 'Please add an ability',
         ];
     }
 }
