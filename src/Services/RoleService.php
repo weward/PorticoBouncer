@@ -6,8 +6,8 @@ use App\Models\Admin\Ability;
 use App\Models\Admin\Role;
 use Bouncer;
 use Carbon\Carbon;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class RoleService
 {
@@ -29,7 +29,7 @@ class RoleService
         try {
             $role = Bouncer::role()->firstOrCreate([
                 'title' => $req->title,
-                'name' => Str::slug($req->title, "."),
+                'name' => Str::slug($req->title, '.'),
             ]);
             // $req->abilities = ids of marked abilities
             Bouncer::sync($role->name)->abilities($req->abilities);
@@ -42,7 +42,7 @@ class RoleService
 
         } catch (\Throwable $th) {
             DB::rollBack();
-            info("this");
+            info('this');
             info($th->getMessage());
         }
 
@@ -58,7 +58,7 @@ class RoleService
 
             $entity->name = $name;
             $entity->title = $req->title;
-            
+
             $entity->save();
             // $req->abilities = ids of marked abilities
             Bouncer::sync($entity->name)->abilities($req->abilities);
@@ -121,7 +121,7 @@ class RoleService
      */
     public function hasExistingAbility()
     {
-        return updateCache("hasExistingAbility", Ability::select('id')->first() ? "1" : "");
+        return updateCache('hasExistingAbility', Ability::select('id')->first() ? '1' : '');
     }
 
     /**

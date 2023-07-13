@@ -12,7 +12,9 @@ use Inertia\Inertia;
 
 class RoleController extends Controller
 {
-    public function __construct(protected RoleService $service, protected AbilityService $abilityService) {}
+    public function __construct(protected RoleService $service, protected AbilityService $abilityService)
+    {
+    }
 
     public function index(Request $request)
     {
@@ -38,8 +40,8 @@ class RoleController extends Controller
     {
         $res = $this->service->store($request);
 
-        if (!$res) {
-            return back()->with('errorMsg', "Oops! Something went wrong!");
+        if (! $res) {
+            return back()->with('errorMsg', 'Oops! Something went wrong!');
         }
 
         return redirect(route('roles.show', $res->id))
