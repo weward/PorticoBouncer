@@ -164,11 +164,11 @@ class InstallCommand extends Command
         }
 
         if ($this->shouldPublishInertiaViews) {
-            $this->comment('Publishing Inertia-specific Views...');
-
+            
             if ($this->confirm('Do you want to publish the Inertia-specific views?')) {
+                $this->comment('Publishing Inertia-specific Views...');
+                
                 $this->copyInertiaViewsIntoApp();
-                $this->registerNavMenuLink('role');
             }
         }
 

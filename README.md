@@ -47,14 +47,25 @@ This also serves as a template
 
 - `php artisan porticobouncer:install`
 
-- Add the `HasPorticoBouncerPermissions` trait in the `User.php` model
+- Check if the package files were registered properly (If the specified files has these values):
+    - Thh `HasPorticoBouncerPermissions` trait is present in the `User.php` model
 
-- Register the custom models in `AppServiceProvider.php`
+    - Custom models are present in `AppServiceProvider.php`
 
-```
-    Bouncer::useAbilityModel(\App\Models\Admin\Ability::class);
-    Bouncer::useRoleModel(\App\Models\Admin\Role::class);
-```
+    ```
+        Bouncer::useAbilityModel(\App\Models\Admin\Ability::class);
+        Bouncer::useRoleModel(\App\Models\Admin\Role::class);
+    ```
+    - The `porticobouncer` routes were registered in the `RouteServiceProvider`
+    - The `'portico.bouncer'` entry exists in thhhe $middlewareAliases array of the `Http/Kernel.php`
+    - Add Role index route to `resources/js/Properties/navMenu.js`
+    ```js
+        {
+            label: 'User Roles',
+            route: route('roles.index'),
+            icon: 'mdi-account-star'
+        },
+    ```
 
 - Run tests
     - `php artisan test --filter=ability`
