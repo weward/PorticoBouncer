@@ -224,7 +224,7 @@ class Package
         return $this;
     }
 
-    public function hasInertiaViews(): static 
+    public function hasInertiaViews(): static
     {
         $this->hasInertiaViews = true;
 
