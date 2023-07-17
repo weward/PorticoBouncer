@@ -164,10 +164,10 @@ class InstallCommand extends Command
         }
 
         if ($this->shouldPublishInertiaViews) {
-            
+
             if ($this->confirm('Do you want to publish the Inertia-specific views?')) {
                 $this->comment('Publishing Inertia-specific Views...');
-                
+
                 $this->copyInertiaViewsIntoApp();
             }
         }
