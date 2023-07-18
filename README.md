@@ -82,6 +82,19 @@ This also serves as a template
 
 - Add `Weward\PorticoBouncer\PorticoBouncerServiceProvider::class,` to the `'providers'` array of the `config/app.php` file. 
 
+
+---
+
+# Developing and Updating the Package
+
+- Include `PorticoBouncer` package folder (`dev/Personal/laravel-packages`) into the VSCode workspace
+- Develop, update and test the files in the main project
+- Copy over all the updated files into its respective folders in the `PorticoBouncer` package
+- Commit the changes to `PorticoBouncer`
+- Add **tags** to `PorticoBouncer`
+- Update the packagist entry
+
+
 ---
 
 ### Creating a new package
