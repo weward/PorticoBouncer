@@ -1,15 +1,15 @@
 <script setup>
 import { reactive } from 'vue'
 import { router, Head, Link, useForm } from '@inertiajs/vue3';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import AppHead from '@/Components/AppHead.vue';
-import PorticoAlert from '@/components/PorticoAlert.vue';
-import InputError from '@/Components/InputError.vue'
-import layoutDataProp, { toast } from '@/Properties/layoutData.js';
-import { ucwords, info } from '@/Properties/helpers.js';
-import PrimaryButton from '@/components/PrimaryButton.vue'
-import LinkButton from '@/components/LinkButton.vue'
-import CheckBoxList from '@/components/CheckBoxList.vue'
+import AdminLayout from '@layouts/AdminLayout.vue';
+import AppHead from '@components/AppHead.vue';
+import PorticoAlert from '@components/PorticoAlert.vue';
+import InputError from '@components/InputError.vue'
+import layoutDataProp, { toast } from '@properties/layoutData.js';
+import { ucwords, info } from '@properties/helpers.js';
+import PrimaryButton from '@components/PrimaryButton.vue'
+import LinkButton from '@components/LinkButton.vue'
+import CheckBoxList from '@components/CheckBoxList.vue'
 
 const props = defineProps({
     role: Object,

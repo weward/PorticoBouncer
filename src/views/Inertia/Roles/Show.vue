@@ -1,10 +1,10 @@
 <script setup>
 import { reactive } from 'vue'
-import AdminLayout from '@/Layouts/AdminLayout.vue'
+import AdminLayout from '@layouts/AdminLayout.vue'
 import { router, Head, Link } from '@inertiajs/vue3'
-import layoutDataProp from '@/Properties/layoutData.js'
-import { ucwords } from '@/Properties/helpers.js'
-import LinkButton from '@/Components/LinkButton.vue'
+import layoutDataProp from '@properties/layoutData.js'
+import { ucwords } from '@properties/helpers.js'
+import LinkButton from '@components/LinkButton.vue'
 
 const props = defineProps({
     role: Object,
@@ -21,7 +21,7 @@ const layoutData = reactive(layoutDataProp)
 
             <template #header>
                 <h2 class="tw-font-bold tw-text-base leading-tight tw-w-full">
-                    {{ role.title }} - User Role
+                    <p class="tw-inline-block tw-pt-2">{{ role.title }} - User Role</p>
                     <LinkButton
                         type="primary"
                         :href="route('roles.edit', role.id)"
@@ -40,7 +40,7 @@ const layoutData = reactive(layoutDataProp)
             </template>
 
 
-            <div class="py-12 tw-text-sm">
+            <div class="md:tw-py-12 tw-pt-6 tw-pb-6 tw-text-sm ">
                 <div class="mx-auto sm:px-6 lg:px-8 px-0">
 
                     <VCard class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -56,13 +56,11 @@ const layoutData = reactive(layoutDataProp)
 
                         <VCardItem class="tw-p-0">
                             
-                            <VTable class="table-about">
-                                <tbody >
+                            <VTable class="table-about--plain ">
+                                <tbody>
                                     <tr>
                                         <td>Title</td>
                                         <td>{{ ucwords(role.title) }}</td>
-                                    </tr>
-                                    <tr>
                                         <td>Name</td>
                                         <td>{{ role.name }}</td>
                                     </tr>
@@ -76,7 +74,7 @@ const layoutData = reactive(layoutDataProp)
             </div>
 
 
-            <div class="py-12 tw-text-sm">
+            <div class="md:tw-py-6 tw-text-sm">
                 <div class="mx-auto sm:px-6 lg:px-8 px-0">
 
                     <VCard class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -90,21 +88,22 @@ const layoutData = reactive(layoutDataProp)
 
                         <hr class="tw-border tw-border-b-purple-500">
                         
-                        <VCardItem class="tw-grid tw-grid-cols-1 md:tw-grid-cols-5 tw-gap-2">
+                        <VCardItem>
+                            <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-4 tw-gap-2">
+                                <div v-for="ability, roleGroup in role.roleAbilities">
+                                    
+                                    <h3 class="tw-p-6 tw-pb-3 tw-font-semibold">
+                                        {{ ucwords(roleGroup) }}
+                                    </h3>
 
-                            <div v-for="ability, roleGroup in role.roleAbilities" class="">
-                                
-                                <h3 class="tw-p-6 tw-pb-3 tw-font-semibold">
-                                    {{ ucwords(roleGroup) }}
-                                </h3>
+                                    <ul class="tw-pb-6 tw-pl-6 tw-text-gray-600">
+                                        <li v-for="a in ability" :key="a.name" class="tw-pb-2">
+                                            <VIcon icon="mdi-check" class="tw-text-green-600"></VIcon>
+                                            {{ a.title }}
+                                        </li>
+                                    </ul>
 
-                                <ul class="tw-pb-6 tw-pl-6 tw-text-gray-600">
-                                    <li v-for="a in ability" :key="a.name" class="tw-pb-2">
-                                        <VIcon icon="mdi-check" class="tw-text-green-600"></VIcon>
-                                        {{ a.title }}
-                                    </li>
-                                </ul>
-
+                                </div>
                             </div>
                             
                         </VCardItem>
